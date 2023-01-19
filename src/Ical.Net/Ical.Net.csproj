@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <LangVersion>8</LangVersion>
     <PackageVersion>4.2.0</PackageVersion>
     <Title>Ical.Net</Title>
     <PackageProjectUrl>https://github.com/rianjs/ical.net</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/rianjs/ical.net</RepositoryUrl>
     <PackageReleaseNotes>hhttps://github.com/rianjs/ical.net/blob/master/release-notes.md</PackageReleaseNotes>
-    <TargetFrameworks>netstandard2.0;net50</TargetFrameworks>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Rian Stockbower, Douglas Day, &amp; Contributors</Authors>
     <Company />
     <SignAssembly>true</SignAssembly>
