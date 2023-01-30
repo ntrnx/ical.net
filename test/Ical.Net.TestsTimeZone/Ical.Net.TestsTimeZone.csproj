@@ -9,7 +9,7 @@
 
         <SignAssembly>true</SignAssembly>
 
-        <AssemblyOriginatorKeyFile>IcalNetStrongnameKey.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile>..\..\IcalNetStrongnameKey.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -27,7 +27,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Ical.Net\Ical.Net.csproj" />
+      <ProjectReference Include="..\..\src\Ical.Net\Ical.Net.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\..\IcalNetStrongnameKey.snk">
+        <Link>IcalNetStrongnameKey.snk</Link>
+      </None>
     </ItemGroup>
 
 </Project>

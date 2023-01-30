@@ -1,3 +1,4 @@
+using System.Globalization;
 using Ical.Net.CalendarComponents;
 using Xunit;
 
