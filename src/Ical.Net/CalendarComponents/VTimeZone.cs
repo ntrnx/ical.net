@@ -17,30 +17,30 @@ namespace Ical.Net.CalendarComponents
         public static VTimeZone FromLocalTimeZone()
             => FromDateTimeZone(DateUtil.LocalDateTimeZone.Id);
 
-        public static VTimeZone FromLocalTimeZone(DateTime earlistDateTimeToSupport, bool includeHistoricalData)
-            => FromDateTimeZone(DateUtil.LocalDateTimeZone.Id, earlistDateTimeToSupport, includeHistoricalData);
+        public static VTimeZone FromLocalTimeZone(DateTime earliestDateTimeToSupport, bool includeHistoricalData)
+            => FromDateTimeZone(DateUtil.LocalDateTimeZone.Id, earliestDateTimeToSupport, includeHistoricalData);
 
         public static VTimeZone FromSystemTimeZone(TimeZoneInfo tzinfo)
             => FromSystemTimeZone(tzinfo, new DateTime(DateTime.Now.Year, 1, 1), false);
 
-        public static VTimeZone FromSystemTimeZone(TimeZoneInfo tzinfo, DateTime earlistDateTimeToSupport, bool includeHistoricalData)
-            => FromDateTimeZone(tzinfo.Id, earlistDateTimeToSupport, includeHistoricalData);
+        public static VTimeZone FromSystemTimeZone(TimeZoneInfo tzinfo, DateTime earliestDateTimeToSupport, bool includeHistoricalData)
+            => FromDateTimeZone(tzinfo.Id, earliestDateTimeToSupport, includeHistoricalData);
 
         public static VTimeZone FromDateTimeZone(string tzId)
             => FromDateTimeZone(tzId, new DateTime(DateTime.Now.Year, 1, 1), includeHistoricalData: false);
 
-        public static VTimeZone FromDateTimeZone(string tzId, DateTime earlistDateTimeToSupport, bool includeHistoricalData)
+        public static VTimeZone FromDateTimeZone(string tzId, DateTime earliestDateTimeToSupport, bool includeHistoricalData)
         {
             var vTimeZone = new VTimeZone(tzId);
 
             var earliestYear = 1900;
             // Support date/times for January 1st of the previous year by default.
-            if (earlistDateTimeToSupport.Year > 1900)
+            if (earliestDateTimeToSupport.Year > 1900)
             {
-                earliestYear = earlistDateTimeToSupport.Year - 1;
+                earliestYear = earliestDateTimeToSupport.Year - 1;
             }
-            var earliest = Instant.FromUtc(earliestYear, earlistDateTimeToSupport.Month,
-                earlistDateTimeToSupport.Day, earlistDateTimeToSupport.Hour, earlistDateTimeToSupport.Minute);
+            var earliest = Instant.FromUtc(earliestYear, earliestDateTimeToSupport.Month,
+                earliestDateTimeToSupport.Day, earliestDateTimeToSupport.Hour, earliestDateTimeToSupport.Minute);
 
             // Only include historical data if asked to do so.  Otherwise,
             // use only the most recent adjustment rules available.
@@ -265,7 +265,7 @@ namespace Ical.Net.CalendarComponents
             Name = Components.Timezone;
         }
 
-        
+
         public VTimeZone(string tzId) : this()
         {
             if (string.IsNullOrWhiteSpace(tzId))
