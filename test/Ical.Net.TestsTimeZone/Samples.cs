@@ -263,6 +263,30 @@ END:VCALENDAR",
                 startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-07T00:00:00"), DateTimeKind.Utc),
                 endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-08T00:00:00"), DateTimeKind.Utc))
         },
+		{
+			"single_with_leading_tabs", (recurring: false, allDay: true,
+				body: @"
+    BEGIN:VCALENDAR
+     PRODID:CommuniGate Pro 6.3.17
+     VERSION:2.0
+   BEGIN:VEVENT
+    ORGANIZER;CN=""Caldav Planner"":MAILTO:caldav@cgdemo.ntrnx.com
+    DTSTAMP:20230112T102048Z
+    UID:836759420.19.caldav
+    SEQUENCE:0
+    SUMMARY:Jan 7 all day
+  DTSTART;VALUE=DATE:20230107
+  DTEND;VALUE=DATE:20230108
+  X-MICROSOFT-CDO-ALLDAYEVENT:TRUE
+X-MICROSOFT-CDO-BUSYSTATUS:BUSY
+LAST-MODIFIED:20230112T102041Z
+CREATED:20230112T102041Z
+PRIORITY:5
+END:VEVENT
+END:VCALENDAR",
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-07T00:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-08T00:00:00"), DateTimeKind.Utc))
+		},
     };
 
     public static Dictionary<string, (bool recurring, bool allDay, string body, DateTime startUtc, DateTime endUtc)> Recurring = new()
@@ -496,8 +520,8 @@ BEGIN:VTIMEZONE
 TZID:Russia/Ekaterinburg
 BEGIN:STANDARD
 DTSTART:19710101T030000
-TZOFFSETFROM:+0300
-TZOFFSETTO:+0300
+TZOFFSETFROM:+0500
+TZOFFSETTO:+0500
 END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
@@ -521,8 +545,8 @@ END:VCALENDAR",
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-11T19:00:00"), DateTimeKind.Utc))
             },
             {
-                "recurring_all_day_eu_west_msk", (recurring: true, allDay: true,
-                    body: @"
+				"recurring_all_day_eu_west_msk", (recurring: true, allDay: true,
+					body: @"
 BEGIN:VCALENDAR
 PRODID:CommuniGate Pro 6.4c1
 VERSION:2.0
@@ -543,22 +567,23 @@ END:DAYLIGHT
 END:VTIMEZONE
 BEGIN:VEVENT
 ORGANIZER;CN=""Мюллер"":MAILTO:muller@cgdemo.ntrnx.com
-RRULE:FREQ=DAILY;UNTIL=20230121T100000Z
-DTSTAMP:20230118T070347Z
-UID:837012697.28.muller
+RRULE:FREQ=DAILY;UNTIL=20230126T000000Z
+DTSTAMP:20230201T115734Z
+UID:837165099.34.muller
 SEQUENCE:0
-SUMMARY:EU_West - Msk Jan 19-21 at 10:00-30 (EUW)
-DTSTART;TZID=Europe/Western:20230119T100000
-DTEND;TZID=Europe/Western:20230119T103000
+SUMMARY:eu-msk Jan 23-26 all day one changed
+DTSTART;TZID=Europe/Western;VALUE=DATE:20230123
+DTEND;TZID=Europe/Western;VALUE=DATE:20230124
 ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""Caldav Calendar"":MAILTO:caldav@cgdemo.ntrnx.com
-X-MICROSOFT-CDO-BUSYSTATUS:TENTATIVE
-LAST-MODIFIED:20230118T070315Z
-CREATED:20230118T070315Z
+X-MICROSOFT-CDO-ALLDAYEVENT:TRUE
+X-MICROSOFT-CDO-BUSYSTATUS:BUSY
+LAST-MODIFIED:20230122T065801Z
+CREATED:20230121T194318Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                    startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-19T10:00:00"), DateTimeKind.Utc),
-                    endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-19T10:30:00"), DateTimeKind.Utc))
+					startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T00:00:00"), DateTimeKind.Utc),
+					endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-24T00:00:00"), DateTimeKind.Utc))
             },
             {
                 "recurring_all_day_na_east_msk", (recurring: true, allDay: true,
