@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using Ical.Net.CalendarComponents;
 using Ical.Net.Serialization.DataTypes;
 using Ical.Net.Utility;
 using NodaTime;
@@ -252,8 +254,18 @@ namespace Ical.Net.DataTypes
 
                     if (!string.IsNullOrWhiteSpace(TzId))
                     {
-                        var asLocal = DateUtil.ToZonedDateTimeLeniently(Value, TzId);
-                        _asUtc = asLocal.ToDateTimeUtc();
+                        VTimeZone vTimeZone = Calendar.TimeZones.FirstOrDefault(tz => tz.TzId == TzId);
+                        TimeZoneInfo ctz = TimeZoneCreator.CreateTimeZone(vTimeZone);
+                        if (ctz != null)
+                        {
+                            DateTime toCovert = DateTime.SpecifyKind(_value, DateTimeKind.Unspecified);
+                            _asUtc = TimeZoneInfo.ConvertTimeToUtc(toCovert, ctz!);
+                        }
+                        else
+                        {
+                            var asLocal = DateUtil.ToZonedDateTimeLeniently(Value, TzId);
+                            _asUtc = asLocal.ToDateTimeUtc();
+                        }
                     }
                     else if(IsUtc || Value.Kind == DateTimeKind.Utc)
                     {

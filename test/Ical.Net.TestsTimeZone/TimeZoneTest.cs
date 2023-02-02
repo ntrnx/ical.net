@@ -12,11 +12,7 @@ public class TimeZoneTest
 
     public TimeZoneTest()
     {
-        using var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder
-                   .SetMinimumLevel(LogLevel.Trace)
-                   .AddConsole());
-        ILogger logger = loggerFactory.CreateLogger<TimeZoneTest>();
-        _tzc = new TimeZoneCreator(logger);
+        _tzc = new TimeZoneCreator();
     }
 
     [Theory]

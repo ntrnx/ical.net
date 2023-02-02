@@ -10,9 +10,12 @@ namespace Ical.Net.Utility
 	{
 		private ILogger _logger;
 
-		public TimeZoneCreator(ILogger logger)
+		public TimeZoneCreator()
 		{
-			_logger = logger;
+            using var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder
+                .SetMinimumLevel(LogLevel.Trace)
+                .AddConsole());
+            _logger = loggerFactory.CreateLogger<TimeZoneCreator>();
 		}
 
 		/// <summary>
@@ -29,6 +32,10 @@ namespace Ical.Net.Utility
 		/// </remarks>
 		internal TimeZoneInfo CreateTimeZone(VTimeZone vTimeZone)
 		{
+            if (vTimeZone is null)
+            {
+                return default;
+            }
 			TimeZoneInfo ctz;
 
 			// First check if there is only one rule, i.e. no daylight saving period, like in Russia

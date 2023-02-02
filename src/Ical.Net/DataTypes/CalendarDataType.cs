@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using Ical.Net.Proxies;
+using Ical.Net.Utility;
 
 namespace Ical.Net.DataTypes
 {
@@ -12,6 +13,7 @@ namespace Ical.Net.DataTypes
         private IParameterCollection _parameters;
         private ParameterCollectionProxy _proxy;
         private ServiceProvider _serviceProvider;
+        internal TimeZoneCreator TimeZoneCreator;
 
         protected ICalendarObject _AssociatedObject;
 
@@ -25,6 +27,7 @@ namespace Ical.Net.DataTypes
             _parameters = new ParameterList();
             _proxy = new ParameterCollectionProxy(_parameters);
             _serviceProvider = new ServiceProvider();
+            TimeZoneCreator = new TimeZoneCreator();
         }
 
         [OnDeserializing]

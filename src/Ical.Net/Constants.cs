@@ -26,6 +26,12 @@ namespace Ical.Net
         public const string End = "END";
     }
 
+    public static class Scope
+    {
+        public const string Begin = "BEGIN";
+        public const string End = "END";
+    }
+
     public static class Components
     {
         public const string Alarm = "VALARM";

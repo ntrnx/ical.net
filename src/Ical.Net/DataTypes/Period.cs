@@ -113,7 +113,7 @@ namespace Ical.Net.DataTypes
                     return;
                 }
                 _startTime = value;
-                ExtrapolateTimes();
+                // ExtrapolateTimes();
             }
         }
 
@@ -128,7 +128,7 @@ namespace Ical.Net.DataTypes
                     return;
                 }
                 _endTime = value;
-                ExtrapolateTimes();
+                // ExtrapolateTimes();
             }
         }
 
@@ -152,7 +152,7 @@ namespace Ical.Net.DataTypes
                     return;
                 }
                 _duration = value;
-                ExtrapolateTimes();
+                // ExtrapolateTimes();
             }
         }
 

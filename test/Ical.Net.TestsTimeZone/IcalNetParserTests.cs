@@ -13,7 +13,7 @@ public class IcalNetParserTests
     [InlineData("single_fixed_dates_tz_eu_west")]
     // artificial example. Possible to create only via Postman. Resampler does not use it
     [InlineData("single_all_day_tz_msk")]
-    public void SingleEvent(string eventType)
+    public void T01_SingleEvent(string eventType)
     {
         CalendarEvent result = Calendar.Load(Samples.Single[eventType].body).Events.First();
 
@@ -32,7 +32,7 @@ public class IcalNetParserTests
     [InlineData("single_fixed_dates_tz_america_ny_complex")]
     [InlineData("single_with_leading_tabs")]
 
-    public void SingleAllDay(string eventType)
+    public void T02_SingleAllDay(string eventType)
     {
 		CalendarEvent result = Ical.Net.Calendar.Load(Samples.Single[eventType].body).Events.First();
 
@@ -59,7 +59,7 @@ public class IcalNetParserTests
     [InlineData("recurring_all_day_yek_msk")]
     [InlineData("recurring_all_day_eu_west_msk")]
     [InlineData("recurring_all_day_na_east_msk")]
-    public void RecurringEvent(string eventType)
+    public void T03_RecurringEvent(string eventType)
     {
         var events = Calendar.Load(Samples.Recurring[eventType].body).Events;
         CalendarEvent result = events.First();
@@ -80,7 +80,7 @@ public class IcalNetParserTests
     [InlineData("recurring_all_day_yek_msk_exdate")]
     [InlineData("recurring_all_day_eu_west_msk_exdate")]
     [InlineData("recurring_all_day_na_east_msk_exdate")]
-    public void RecurringExDate(string eventType)
+    public void T04_RecurringExDate(string eventType)
     {
         var events = Calendar.Load(Samples.RecurringExDate[eventType].body).Events;
         CalendarEvent result = events.First();
@@ -97,7 +97,7 @@ public class IcalNetParserTests
     [InlineData("recurring_fixed_dates_tz_yek_msk_changed")]
     [InlineData("recurring_fixed_dates_tz_eu_west_msk_changed")]
     [InlineData("recurring_fixed_dates_tz_na_east_msk_changed")]
-    public void RecurringInstanceChanged(string eventType)
+    public void T05_RecurringInstanceChanged(string eventType)
     {
         var events = Calendar.Load(Samples.RecurringInstanceChanged[eventType].body).Events;
         CalendarEvent mainEvent = events[0];
@@ -116,7 +116,7 @@ public class IcalNetParserTests
     [InlineData("recurring_all_day_yek_msk_changed")]
     [InlineData("recurring_all_day_eu_west_msk_changed")]
     [InlineData("recurring_all_day_na_east_msk_changed")]
-    public void RecurringAllDayInstanceChanged(string eventType)
+    public void T06_RecurringAllDayInstanceChanged(string eventType)
     {
         var events = Calendar.Load(Samples.RecurringInstanceChanged[eventType].body).Events;
         CalendarEvent mainEvent = events[0];

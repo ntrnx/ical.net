@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Text.RegularExpressions;
 using Ical.Net.CalendarComponents;
 
+namespace System.Runtime.CompilerServices
+{
+    internal static class IsExternalInit {}
+}
+
 namespace Ical.Net.Serialization
 {
+    internal record ParsedLine(string Name, string Value, CaptureCollection ParamNames, CaptureCollection ParamValues);
     public class SimpleDeserializer
     {
         internal SimpleDeserializer(
@@ -68,15 +73,31 @@ namespace Ical.Net.Serialization
             return contentLine;
         }
 
+        private static ParsedLine ParseLine(string input)
+        {
+            var match = _contentLineRegex.Match(input);
+            if (!match.Success)
+            {
+                throw new SerializationException($"Could not parse line: '{input}'");
+            }
+            var name = match.Groups[_nameGroup].Value;
+            var value = match.Groups[_valueGroup].Value;
+            var paramNames = match.Groups[_paramNameGroup].Captures;
+            var paramValues = match.Groups[_paramValueGroup].Captures;
+            
+            return new ParsedLine(name, value, paramNames, paramValues);
+        }
+        
         public IEnumerable<ICalendarComponent> Deserialize(TextReader reader)
         {
             var context = new SerializationContext();
             var stack = new Stack<ICalendarComponent>();
             var current = default(ICalendarComponent);
-            foreach (var contentLineString in GetContentLines(reader))
+            
+            foreach (ParsedLine parsedLine in GetContentLines(reader))
             {
-                var contentLine = ParseContentLine(context, contentLineString);
-                if (string.Equals(contentLine.Name, "BEGIN", StringComparison.OrdinalIgnoreCase))
+                var contentLine = ParseContentLine(context, parsedLine);
+                if (string.Equals(contentLine.Name, Scope.Begin, StringComparison.OrdinalIgnoreCase))
                 {
                     stack.Push(current);
                     current = _componentFactory.Build((string)contentLine.Value);
@@ -86,13 +107,13 @@ namespace Ical.Net.Serialization
                 {
                     if (current == null)
                     {
-                        throw new SerializationException($"Expected 'BEGIN', found '{contentLine.Name}'");
+                        throw new SerializationException($"Expected '{Scope.Begin}', found '{contentLine.Name}'");
                     }
-                    if (string.Equals(contentLine.Name, "END", StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(contentLine.Name, Scope.End, StringComparison.OrdinalIgnoreCase))
                     {
                         if (!string.Equals((string)contentLine.Value, current.Name, StringComparison.OrdinalIgnoreCase))
                         {
-                            throw new SerializationException($"Expected 'END:{current.Name}', found 'END:{contentLine.Value}'");
+                            throw new SerializationException($"Expected '{Scope.End}:{current.Name}', found 'END:{contentLine.Value}'");
                         }
                         SerializationUtil.OnDeserialized(current);
                         var finished = current;
@@ -117,23 +138,13 @@ namespace Ical.Net.Serialization
                 throw new SerializationException($"Unclosed component {current.Name}");
             }
         }
-
-        private CalendarProperty ParseContentLine(SerializationContext context, string input)
+        
+        private CalendarProperty ParseContentLine(SerializationContext context, ParsedLine parsedLine)
         {
-            var match = _contentLineRegex.Match(input);
-            if (!match.Success)
-            {
-                throw new SerializationException($"Could not parse line: '{input}'");
-            }
-            var name = match.Groups[_nameGroup].Value;
-            var value = match.Groups[_valueGroup].Value;
-            var paramNames = match.Groups[_paramNameGroup].Captures;
-            var paramValues = match.Groups[_paramValueGroup].Captures;
-
-            var property = new CalendarProperty(name.ToUpperInvariant());
+            var property = new CalendarProperty(parsedLine.Name.ToUpperInvariant());
             context.Push(property);
-            SetPropertyParameters(property, paramNames, paramValues);
-            SetPropertyValue(context, property, value);
+            SetPropertyParameters(property, parsedLine.ParamNames, parsedLine.ParamValues);
+            SetPropertyValue(context, property, parsedLine.Value);
             context.Pop();
             return property;
         }
@@ -178,25 +189,79 @@ namespace Ical.Net.Serialization
             }
         }
 
-        private static IEnumerable<string> GetContentLines(TextReader reader)
+        /// <summary>
+        /// Parses iCalendar file but puts all VTIMEZONE occurrences first
+        /// in order to use time zone(s) to convert date time to UTC later during the parsing
+        /// </summary>
+        /// <param name="reader">content of iCalendar in stream format</param>
+        /// <returns><see cref="IEnumerable{T}">IEnumerable&lt;ParsedLine&gt;</see> where <see cref="ParsedLine"/> is a token of the parsed string</returns>
+        private static IEnumerable<ParsedLine> GetContentLines(TextReader reader)
         {
+            var lines = new List<ParsedLine>();
+            bool isvTimeZone = false;
             while (true)
             {
+                #region Get next line -> break / continue / process
+
                 var nextLine = reader.ReadLine();
                 if (nextLine == null)
                 {
-                    yield break;
+                    break;
                 }
 
-				nextLine = nextLine.Trim();
+                nextLine = nextLine.Trim();
 
                 if (nextLine.Length <= 0)
                 {
                     continue;
                 }
 
-                yield return nextLine;
+                #endregion
+
+                ParsedLine parsedLine = ParseLine(nextLine);
+
+                switch (parsedLine.Name, parsedLine.Value, isvTimeZone)
+                {
+                    case(Scope.Begin, Components.Calendar,false):
+                        yield return parsedLine;
+                        break;
+                    
+                    case(Scope.Begin, Components.Calendar,true):
+                    case(Scope.End, Components.Calendar,true):
+                        throw new SerializationException($"'{parsedLine.Name}:VCALENDAR was encountered while parsing VTIMEZONE'");
+                   
+                    case(Scope.End, Components.Calendar,false):
+                        lines.Add(parsedLine);
+                        foreach (ParsedLine token in lines)
+                        {
+                            yield return token;
+                        }
+                        lines.Clear();
+                        break;
+
+                    case (Scope.Begin, Components.Timezone, false):
+                        isvTimeZone = true;
+                        yield return parsedLine;
+                        break;
+                    
+                    case (Scope.Begin, Components.Timezone, true):
+                        throw new SerializationException($"'BEGIN:VTIMEZONE appeared the second time before END:VTIMEZONE'");
+                    
+                    case (Scope.End, Components.Timezone, true):
+                        isvTimeZone = false;
+                        yield return parsedLine;
+                        break;
+                    
+                    case (_, _, true):
+                        yield return parsedLine;
+                        break;
+                    
+                    default:
+                        lines.Add(parsedLine);
+                        break;
+                }
             }
+
         }
     }
 }
