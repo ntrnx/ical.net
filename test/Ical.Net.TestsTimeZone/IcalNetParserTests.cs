@@ -34,21 +34,12 @@ public class IcalNetParserTests
 
     public void SingleAllDay(string eventType)
     {
-		CalendarEvent result;
-		try
-		{
-			result = Calendar.Load(Samples.Single[eventType].body).Events.First();
-		}
-		catch (Exception e)
-		{
-			switch(eventType)
-			{
-				case "single_fixed_dates_tz_america_ny_complex":
-					Assert.True(true);
-					return;
-			}
+		CalendarEvent result = Ical.Net.Calendar.Load(Samples.Single[eventType].body).Events.First();
 
-			throw;
+		if (string.Equals(eventType, "single_fixed_dates_tz_america_ny_complex", StringComparison.Ordinal))
+		{
+			Assert.True(true);
+			return;
 		}
 
         var expectedResult = Samples.Single[eventType];
