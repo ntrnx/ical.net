@@ -11,6 +11,7 @@ public class IcalNetParserTests
     [InlineData("single_fixed_dates_tz_msk")]
     [InlineData("single_fixed_dates_tz_russian")]
     [InlineData("single_fixed_dates_tz_eu_west")]
+    [InlineData("single_with_long_lines")]
     // artificial example. Possible to create only via Postman. Resampler does not use it
     [InlineData("single_all_day_tz_msk")]
     public void T01_SingleEvent(string eventType)

@@ -287,6 +287,37 @@ END:VCALENDAR",
 				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-07T00:00:00"), DateTimeKind.Utc),
 				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-08T00:00:00"), DateTimeKind.Utc))
 		},
+		{
+			"single_with_long_lines", (recurring: false, allDay: false,
+				body: @"
+BEGIN:VCALENDAR
+PRODID:CommuniGate Pro 6.4c1
+VERSION:2.0
+BEGIN:VEVENT
+ORGANIZER;CN=""Штирлиц"":MAILTO:stierlitz@cgdemo.ntrnx.com
+DTSTAMP:20230202T163814Z
+UID:837677932.40.stierlitz
+SEQUENCE:0
+SUMMARY:line length test
+DTSTART:20230201T083500Z
+DTEND:20230201T093500Z
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""Caldav Calendar"":MAILTO:caldav@cgdemo.ntrnx.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""dev_caldav@cgdemo.ntrnx.com"":MAILTO:dev_caldav@cgdemo.ntrnx.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""Мюллер"":MAILTO:muller@cgdemo.ntrnx.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""delegate_test1@cgdemo.ntrnx.com"":MAILTO:delegate_test1@cgdemo.ntrnx.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""delegate_test2@cgdemo.ntrnx.com"":MAILTO:delegate_test2@cgdemo.ntrnx.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""delegate_test3@cgdemo.ntrnx.com"":MAILTO:delegate_test3@cgdemo.ntrnx.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""delegate_test4@cgdemo.ntrnx.com"":MAILTO:delegate_test4@cgdemo.ntrnx.com
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""adkfljasdkfjasldkfjalsdkfjlasdkfj@mail.com"":MAILTO:adkfljasdkfjasldkfjalsdkfjlasdkfj@mail.com
+X-MICROSOFT-CDO-BUSYSTATUS:BUSY
+LAST-MODIFIED:20230202T163745Z
+CREATED:20230202T163745Z
+PRIORITY:5
+END:VEVENT
+END:VCALENDAR",
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-02-01T08:35:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-02-01T09:35:00"), DateTimeKind.Utc))
+		},
     };
 
     public static Dictionary<string, (bool recurring, bool allDay, string body, DateTime startUtc, DateTime endUtc)> Recurring = new()
