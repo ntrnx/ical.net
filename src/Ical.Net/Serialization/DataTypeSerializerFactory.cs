@@ -7,25 +7,6 @@ namespace Ical.Net.Serialization
 {
     public class DataTypeSerializerFactory : ISerializerFactory
     {
-		public virtual ISerializer Build(Type objectType, SerializationContext ctx, CalendarProperty property)
-		{
-			if (typeof (IDateTime).IsAssignableFrom(objectType))
-			{
-				return new DateTimeSerializer(ctx, property);
-			}
-
-			if (typeof (PeriodList).IsAssignableFrom(objectType))
-			{
-				return new PeriodListSerializer(ctx, property);
-			}
-
-			if (typeof (Period).IsAssignableFrom(objectType))
-			{
-				return new PeriodSerializer(ctx, property);
-			}
-			return Build(objectType, ctx);
-		}
-
 		/// <summary>
 		/// Returns a serializer that can be used to serialize and object
 		/// of type <paramref name="objectType"/>.
@@ -64,11 +45,11 @@ namespace Ical.Net.Serialization
                 }
                 else if (typeof (Period).IsAssignableFrom(objectType))
                 {
-                    s = new PeriodSerializer(ctx, default);
+                    s = new PeriodSerializer(ctx);
                 }
                 else if (typeof (PeriodList).IsAssignableFrom(objectType))
                 {
-                    s = new PeriodListSerializer(ctx, default);
+                    s = new PeriodListSerializer(ctx);
                 }
                 else if (typeof (RecurrencePattern).IsAssignableFrom(objectType))
                 {
@@ -96,7 +77,7 @@ namespace Ical.Net.Serialization
                 }
 				else if (typeof (IDateTime).IsAssignableFrom(objectType))
 				{
-					return new DateTimeSerializer(ctx, default);
+					return new DateTimeSerializer(ctx);
 				}
                 // Default to a string serializer, which simply calls
                 // ToString() on the value to serialize it.

@@ -11,11 +11,6 @@ namespace Ical.Net.Serialization.DataTypes
 
 		public PeriodSerializer(SerializationContext ctx) : base(ctx) { }
 
-        public PeriodSerializer(SerializationContext ctx, CalendarProperty property)
-			: base(ctx, property)
-		{
-		}
-
         public override Type TargetType => typeof (Period);
 
         public override string SerializeToString(object obj)
@@ -33,7 +28,7 @@ namespace Ical.Net.Serialization.DataTypes
 
             try
             {
-                var dtSerializer = factory.Build(typeof (IDateTime), SerializationContext, CalendarProperty) as IStringSerializer;
+                var dtSerializer = factory.Build(typeof (IDateTime), SerializationContext) as IStringSerializer;
                 var timeSpanSerializer = factory.Build(typeof (TimeSpan), SerializationContext) as IStringSerializer;
                 if (dtSerializer == null || timeSpanSerializer == null)
                 {
@@ -73,7 +68,7 @@ namespace Ical.Net.Serialization.DataTypes
                 return null;
             }
 
-            var dtSerializer = factory.Build(typeof (IDateTime), SerializationContext, CalendarProperty) as IStringSerializer;
+            var dtSerializer = factory.Build(typeof (IDateTime), SerializationContext) as IStringSerializer;
             var durationSerializer = factory.Build(typeof (TimeSpan), SerializationContext) as IStringSerializer;
             if (dtSerializer == null || durationSerializer == null)
             {

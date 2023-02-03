@@ -10,10 +10,7 @@ namespace Ical.Net.Serialization.DataTypes
     {
         public DateTimeSerializer() { }
 
-		public DateTimeSerializer(SerializationContext ctx, CalendarProperty property)
-			: base(ctx, property)
-		{
-		}
+		public DateTimeSerializer(SerializationContext ctx) : base(ctx) { }
 
         private DateTime CoerceDateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)
         {
@@ -157,9 +154,9 @@ namespace Ical.Net.Serialization.DataTypes
             }
 			else
 			{
-				if (CalendarProperty?.Parameters.ContainsKey("TZID") ?? false)
+				if (dt.Parameters?.ContainsKey("TZID") ?? false)
 				{
-					string tzId = CalendarProperty.Parameters.Get("TZID");
+					string tzId = dt.Parameters.Get("TZID");
 					TimeZoneInfo timeZoneInfo = SerializationContext.GetTimeZone(tzId);
 					if (timeZoneInfo != null)
 					{

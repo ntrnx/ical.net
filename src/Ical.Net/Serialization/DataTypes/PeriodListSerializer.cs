@@ -9,10 +9,7 @@ namespace Ical.Net.Serialization.DataTypes
     {
         public PeriodListSerializer() { }
 
-		public PeriodListSerializer(SerializationContext ctx, CalendarProperty property)
-			: base(ctx, property)
-		{
-		}
+		public PeriodListSerializer(SerializationContext ctx) : base(ctx) { }
 
         public override Type TargetType => typeof (PeriodList);
 
@@ -64,8 +61,8 @@ namespace Ical.Net.Serialization.DataTypes
             // Decode the value, if necessary
             value = Decode(rdt, value);
 
-            var dtSerializer = factory.Build(typeof (IDateTime), SerializationContext, CalendarProperty) as IStringSerializer;
-            var periodSerializer = factory.Build(typeof (Period), SerializationContext, CalendarProperty) as IStringSerializer;
+            var dtSerializer = factory.Build(typeof (IDateTime), SerializationContext) as IStringSerializer;
+            var periodSerializer = factory.Build(typeof (Period), SerializationContext) as IStringSerializer;
             if (dtSerializer == null || periodSerializer == null)
             {
                 return null;
