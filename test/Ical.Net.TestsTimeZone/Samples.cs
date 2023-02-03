@@ -320,7 +320,7 @@ END:VCALENDAR",
 		},
     };
 
-    public static Dictionary<string, (bool recurring, bool allDay, string body, DateTime startUtc, DateTime endUtc)> Recurring = new()
+    public static Dictionary<string, (bool recurring, bool allDay, string body, DateTime until, DateTime startUtc, DateTime endUtc)> Recurring = new()
         {
             {
                 "recurring_fixed_dates_tz_msk_msk", (recurring: true, allDay: false,
@@ -351,6 +351,7 @@ CREATED:20230111T203350Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+                    until: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T10:00:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T10:00:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T10:30:00"), DateTimeKind.Utc))
             },
@@ -385,6 +386,7 @@ CREATED:20230116T050238Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+                    until: DateTime.SpecifyKind(DateTime.Parse("2023-01-18T09:15:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-16T09:15:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-16T09:45:00"), DateTimeKind.Utc))
             },
@@ -425,6 +427,7 @@ CREATED:20230116T080752Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+                    until: DateTime.SpecifyKind(DateTime.Parse("2023-01-18T12:15:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-16T12:15:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-16T13:00:00"), DateTimeKind.Utc))
             },
@@ -465,6 +468,7 @@ CREATED:20230118T064739Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+					until: DateTime.SpecifyKind(DateTime.Parse("2023-01-21T14:00:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-19T14:00:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-19T14:30:00"), DateTimeKind.Utc))
             },
@@ -505,6 +509,7 @@ CREATED:20230130T120009Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+					until: DateTime.SpecifyKind(DateTime.Parse("2023-01-29T03:15:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-27T03:15:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-27T03:45:00"), DateTimeKind.Utc))
             },            {
@@ -538,6 +543,7 @@ CREATED:20230113T045048Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+					until: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T00:00:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-10T21:00:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-11T21:00:00"), DateTimeKind.Utc))
             },
@@ -572,6 +578,7 @@ CREATED:20230113T044257Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+					until: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T03:00:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-10T19:00:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-11T19:00:00"), DateTimeKind.Utc))
             },
@@ -613,6 +620,7 @@ CREATED:20230121T194318Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+					until: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T00:00:00"), DateTimeKind.Utc),
 					startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T00:00:00"), DateTimeKind.Utc),
 					endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-24T00:00:00"), DateTimeKind.Utc))
             },
@@ -654,13 +662,22 @@ CREATED:20230118T061537Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
+					until: DateTime.SpecifyKind(DateTime.Parse("2023-01-21T00:00:00"), DateTimeKind.Utc),
                     startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-19T05:00:00"), DateTimeKind.Utc),
                     endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-20T05:00:00"), DateTimeKind.Utc))
             },
         };
 
     // EXDATE
-    public static Dictionary<string, (bool recurring, bool allDay, string body, DateTime startUtc, DateTime endUtc)> RecurringExDate = new()
+    public static Dictionary<string,
+							(bool recurring,
+							 bool allDay,
+							string body,
+							DateTime startUtc,
+							DateTime endUtc,
+							DateTime until,
+							DateTime exdate)>
+		RecurringExDate = new()
     {
         {"recurring_fixed_dates_tz_msk_msk_exdate", (recurring: true, allDay: false,
                 body: @"
@@ -692,8 +709,10 @@ CREATED:20230111T203350Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-13T10:00:00"), DateTimeKind.Utc),
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T10:00:00"), DateTimeKind.Utc))
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T10:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T10:30:00"), DateTimeKind.Utc),
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T10:00:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-13T10:00:00"), DateTimeKind.Utc))
         },
         {"recurring_fixed_dates_tz_yek_msk_exdate", (recurring: true, allDay: false,
                 body: @"
@@ -725,8 +744,10 @@ CREATED:20230115T182246Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-13T05:00:00"), DateTimeKind.Utc),
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T05:00:00"), DateTimeKind.Utc))
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T05:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T05:30:00"), DateTimeKind.Utc),
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T05:00:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-13T05:00:00"), DateTimeKind.Utc))
         },
         {"recurring_fixed_dates_tz_eu_west_msk_exdate", (recurring: true, allDay: false,
                 body: @"
@@ -765,8 +786,10 @@ CREATED:20230113T114240Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-11T13:00:00"), DateTimeKind.Utc),
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T13:00:00"), DateTimeKind.Utc))
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-09T13:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-09T13:30:00"), DateTimeKind.Utc),
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-12T13:00:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-11T13:00:00"), DateTimeKind.Utc))
         },
         {"recurring_fixed_dates_tz_na_east_msk_exdate", (recurring: true, allDay: false,
                 body: @"
@@ -805,8 +828,10 @@ CREATED:20230121T212840Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-25T12:15:00"), DateTimeKind.Utc),
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T12:15:00"), DateTimeKind.Utc))
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T12:15:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T12:45:00"), DateTimeKind.Utc),
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T12:15:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-25T12:15:00"), DateTimeKind.Utc))
         },
         {"recurring_all_day_msk_msk_exdate", (recurring: true, allDay: true,
                 body: @"
@@ -839,9 +864,11 @@ CREATED:20230113T045048Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-13T21:00:00"), DateTimeKind.Utc),
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-10T21:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-11T21:00:00"), DateTimeKind.Utc),
 // this is UNTIL value. It's wrong due to CommuniGate mistake. We'll use wrong value no to fail the test
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T03:00:00"), DateTimeKind.Utc))
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-14T03:00:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-13T21:00:00"), DateTimeKind.Utc))
         },
         {"recurring_all_day_yek_msk_exdate", (recurring: true, allDay: true,
                 body: @"
@@ -874,9 +901,11 @@ CREATED:20230121T193104Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-25T19:00:00"), DateTimeKind.Utc),
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-22T19:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T19:00:00"), DateTimeKind.Utc),
 // this is UNTIL value. It's wrong due to CommuniGate mistake. We'll use wrong value no to fail the test
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T00:00:00"), DateTimeKind.Utc))
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T00:00:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-25T19:00:00"), DateTimeKind.Utc))
         },
         {"recurring_all_day_eu_west_msk_exdate", (recurring: true, allDay: true,
                 body: @"
@@ -916,9 +945,11 @@ CREATED:20230121T194318Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T00:00:00"), DateTimeKind.Utc),
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T00:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-24T00:00:00"), DateTimeKind.Utc),
 // this is UNTIL value. It's wrong due to CommuniGate mistake. We'll use wrong value no to fail the test
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T00:00:00"), DateTimeKind.Utc))
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T00:00:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T00:00:00"), DateTimeKind.Utc))
         },
         {"recurring_all_day_na_east_msk_exdate", (recurring: true, allDay: true,
                 body: @"
@@ -958,9 +989,11 @@ CREATED:20230121T213429Z
 PRIORITY:5
 END:VEVENT
 END:VCALENDAR",
-                startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-24T05:00:00"), DateTimeKind.Utc),
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-23T05:00:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-24T05:00:00"), DateTimeKind.Utc),
 // this is UNTIL value. It's wrong due to CommuniGate mistake. We'll use wrong value no to fail the test
-                endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T00:00:00"), DateTimeKind.Utc))
+				until: DateTime.SpecifyKind(DateTime.Parse("2023-01-26T00:00:00"), DateTimeKind.Utc),
+				exdate: DateTime.SpecifyKind(DateTime.Parse("2023-01-24T05:00:00"), DateTimeKind.Utc))
         },
     };
 

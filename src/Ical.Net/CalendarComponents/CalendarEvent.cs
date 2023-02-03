@@ -258,7 +258,7 @@ namespace Ical.Net.CalendarComponents
         {
             base.OnDeserialized(context);
 
-            // ExtrapolateTimes(-1);
+            ExtrapolateTimes(-1);
         }
 
         private void ExtrapolateTimes(int source)

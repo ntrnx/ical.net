@@ -84,16 +84,16 @@ namespace Ical.Net.Serialization
             var value = match.Groups[_valueGroup].Value;
             var paramNames = match.Groups[_paramNameGroup].Captures;
             var paramValues = match.Groups[_paramValueGroup].Captures;
-            
+
             return new ParsedLine(name, value, paramNames, paramValues);
         }
-        
+
         public IEnumerable<ICalendarComponent> Deserialize(TextReader reader)
         {
             var context = new SerializationContext();
             var stack = new Stack<ICalendarComponent>();
             var current = default(ICalendarComponent);
-            
+
             foreach (ParsedLine parsedLine in GetContentLines(reader))
             {
                 var contentLine = ParseContentLine(context, parsedLine);
@@ -116,10 +116,16 @@ namespace Ical.Net.Serialization
                             throw new SerializationException($"Expected '{Scope.End}:{current.Name}', found 'END:{contentLine.Value}'");
                         }
                         SerializationUtil.OnDeserialized(current);
+						if (string.Equals((string)contentLine.Value, Components.Timezone, StringComparison.OrdinalIgnoreCase))
+						{
+							context.AddTimeZone((VTimeZone)current);
+						}
                         var finished = current;
                         current = stack.Pop();
-                        if (current == null)
+
+                        if (current == null) // END:VCALENDAR was encountered
                         {
+							context.ClearTimeZones();
                             yield return finished;
                         }
                         else
@@ -138,7 +144,7 @@ namespace Ical.Net.Serialization
                 throw new SerializationException($"Unclosed component {current.Name}");
             }
         }
-        
+
         private CalendarProperty ParseContentLine(SerializationContext context, ParsedLine parsedLine)
         {
             var property = new CalendarProperty(parsedLine.Name.ToUpperInvariant());
@@ -170,7 +176,7 @@ namespace Ical.Net.Serialization
         private void SetPropertyValue(SerializationContext context, CalendarProperty property, string value)
         {
             var type = _dataTypeMapper.GetPropertyMapping(property) ?? typeof(string);
-            var serializer = (SerializerBase)_serializerFactory.Build(type, context);
+            var serializer = (SerializerBase)_serializerFactory.Build(type, context, property);
             using (var valueReader = new StringReader(value))
             {
                 var propertyValue = serializer.Deserialize(valueReader);
@@ -225,11 +231,11 @@ namespace Ical.Net.Serialization
                     case(Scope.Begin, Components.Calendar,false):
                         yield return parsedLine;
                         break;
-                    
+
                     case(Scope.Begin, Components.Calendar,true):
                     case(Scope.End, Components.Calendar,true):
                         throw new SerializationException($"'{parsedLine.Name}:VCALENDAR was encountered while parsing VTIMEZONE'");
-                   
+
                     case(Scope.End, Components.Calendar,false):
                         lines.Add(parsedLine);
                         foreach (ParsedLine token in lines)
@@ -243,19 +249,19 @@ namespace Ical.Net.Serialization
                         isvTimeZone = true;
                         yield return parsedLine;
                         break;
-                    
+
                     case (Scope.Begin, Components.Timezone, true):
                         throw new SerializationException($"'BEGIN:VTIMEZONE appeared the second time before END:VTIMEZONE'");
-                    
+
                     case (Scope.End, Components.Timezone, true):
                         isvTimeZone = false;
                         yield return parsedLine;
                         break;
-                    
+
                     case (_, _, true):
                         yield return parsedLine;
                         break;
-                    
+
                     default:
                         lines.Add(parsedLine);
                         break;

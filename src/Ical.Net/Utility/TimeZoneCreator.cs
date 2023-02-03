@@ -6,16 +6,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Ical.Net.Utility
 {
-	public class TimeZoneCreator
+	internal static class TimeZoneCreator
 	{
-		private ILogger _logger;
+		private static ILogger _logger;
 
-		public TimeZoneCreator()
+		static TimeZoneCreator()
 		{
             using var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder
                 .SetMinimumLevel(LogLevel.Trace)
                 .AddConsole());
-            _logger = loggerFactory.CreateLogger<TimeZoneCreator>();
+            _logger = loggerFactory.CreateLogger("TimeZoneCreator");
 		}
 
 		/// <summary>
@@ -30,7 +30,7 @@ namespace Ical.Net.Utility
 		/// Требования описаны здесь
 		/// https://gitlab.dev.ntrnx.com/video-conferencing/resampler/-/wikis/%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0-%D1%81-%D1%87%D0%B0%D1%81%D0%BE%D0%B2%D1%8B%D0%BC%D0%B8-%D0%BF%D0%BE%D1%8F%D1%81%D0%B0%D0%BC%D0%B8
 		/// </remarks>
-		internal TimeZoneInfo CreateTimeZone(VTimeZone vTimeZone)
+		internal static TimeZoneInfo CreateTimeZone(VTimeZone vTimeZone)
 		{
             if (vTimeZone is null)
             {
@@ -145,7 +145,7 @@ namespace Ical.Net.Utility
 		/// </summary>
 		/// <param name="vTimeZoneInfo"></param>
 		/// <returns></returns>
-		private bool ValidateTimeZoneInfo(VTimeZoneInfo vTimeZoneInfo)
+		private static bool ValidateTimeZoneInfo(VTimeZoneInfo vTimeZoneInfo)
 		{
 			if (vTimeZoneInfo.ExceptionDates.Any())
 			{
@@ -240,7 +240,7 @@ namespace Ical.Net.Utility
 		/// </summary>
 		/// <param name="vTimeZoneInfo">STANDARD rule</param>
 		/// <returns>true if corresponds, false otherwise</returns>
-		private bool ValidateSingleTimeZoneInfo(VTimeZoneInfo vTimeZoneInfo)
+		private static bool ValidateSingleTimeZoneInfo(VTimeZoneInfo vTimeZoneInfo)
 		{
 			if (!string.Equals(vTimeZoneInfo.Name, "STANDARD", StringComparison.OrdinalIgnoreCase))
 			{

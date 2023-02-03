@@ -54,7 +54,12 @@ namespace Ical.Net.DataTypes
         /// </summary>
         string TzId { get; set; }
 
-        /// <summary>
+		/// <summary>
+		/// Gets/Sets Microsoft TimeZoneInfo value based on the parsed VTIMEZONE information from teh VCALENDAR
+		/// </summary>
+		TimeZoneInfo TimeZoneInfo { get; set; }
+
+		/// <summary>
         /// Gets the year for this date/time value.
         /// </summary>
         int Year { get; }

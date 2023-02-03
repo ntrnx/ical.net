@@ -8,6 +8,11 @@ namespace Ical.Net.Serialization.DataTypes
 
         protected EncodableDataTypeSerializer(SerializationContext ctx) : base(ctx) {}
 
+		protected EncodableDataTypeSerializer(SerializationContext ctx, CalendarProperty property)
+			: base(ctx, property)
+		{
+		}
+
         protected string Encode(IEncodableDataType dt, string value)
         {
             if (value == null)

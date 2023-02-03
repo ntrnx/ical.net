@@ -15,6 +15,16 @@ namespace Ical.Net.Serialization
             _mDataTypeSerializerFactory = new DataTypeSerializerFactory();
         }
 
+		public virtual ISerializer Build(Type objectType, SerializationContext ctx, CalendarProperty property)
+		{
+			if (typeof (ICalendarDataType).IsAssignableFrom(objectType))
+			{
+				return _mDataTypeSerializerFactory.Build(objectType, ctx, property);
+			}
+
+			return Build(objectType, ctx);
+		}
+
         /// <summary>
         /// Returns a serializer that can be used to serialize and object
         /// of type <paramref name="objectType"/>.

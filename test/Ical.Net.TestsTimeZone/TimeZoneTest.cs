@@ -8,13 +8,6 @@ namespace Ical.Net.TestsTimeZone;
 
 public class TimeZoneTest
 {
-    private readonly TimeZoneCreator _tzc;
-
-    public TimeZoneTest()
-    {
-        _tzc = new TimeZoneCreator();
-    }
-
     [Theory]
     [InlineData("single_fixed_dates_tz_eu_west", "2023-01-25T06:00:00", "2023-01-25T06:00:00")]
 
@@ -54,7 +47,7 @@ public class TimeZoneTest
         CalendarEvent calendarEvent = Ical.Net.Calendar.Load(Samples.Single[tz].body).Events.First();
 
         VTimeZone vTimeZone = calendarEvent.Calendar.TimeZones.First();
-        TimeZoneInfo? ctz = _tzc.CreateTimeZone(vTimeZone);
+        TimeZoneInfo? ctz = TimeZoneCreator.CreateTimeZone(vTimeZone);
 
         DateTime sourceDateTz = DateTime.SpecifyKind(DateTime.Parse(originalInTz), DateTimeKind.Unspecified);
         DateTime expectedTz;
@@ -108,7 +101,7 @@ public class TimeZoneTest
         CalendarEvent calendarEvent = Ical.Net.Calendar.Load(Samples.Recurring[tz].body).Events.First();
 
         VTimeZone vTimeZone = calendarEvent.Calendar.TimeZones.First();
-        TimeZoneInfo? ctz = _tzc.CreateTimeZone(vTimeZone);
+        TimeZoneInfo? ctz = TimeZoneCreator.CreateTimeZone(vTimeZone);
 
         DateTime sourceDateTz = DateTime.SpecifyKind(DateTime.Parse(originalInTz), DateTimeKind.Unspecified);
         DateTime expectedTz;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Ical.Net.DataTypes;
 using Ical.Net.Proxies;
 using Ical.Net.Utility;
@@ -265,7 +266,6 @@ namespace Ical.Net.CalendarComponents
             Name = Components.Timezone;
         }
 
-
         public VTimeZone(string tzId) : this()
         {
             if (string.IsNullOrWhiteSpace(tzId))
@@ -277,7 +277,15 @@ namespace Ical.Net.CalendarComponents
             Location = _nodaZone.Id;
         }
 
-        private DateTimeZone _nodaZone;
+		protected override void OnDeserialized(StreamingContext context)
+		{
+			base.OnDeserialized(context);
+			TimeZoneInfo = TimeZoneCreator.CreateTimeZone(this);
+		}
+
+		public TimeZoneInfo TimeZoneInfo { get; set; }
+
+		private DateTimeZone _nodaZone;
         private string _tzId;
         public virtual string TzId
         {

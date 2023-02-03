@@ -70,6 +70,7 @@ public class IcalNetParserTests
         Assert.Equal(expectedResult.allDay, result.IsAllDay);
         Assert.Equal(expectedResult.startUtc, result.DtStart.AsUtc);
         Assert.Equal(expectedResult.endUtc, result.DtEnd.AsUtc);
+		Assert.Equal(expectedResult.until, result.RecurrenceRules.First().Until);
     }
 
     [Theory]
@@ -89,8 +90,10 @@ public class IcalNetParserTests
         var expectedResult = Samples.RecurringExDate[eventType];
         Assert.Equal(expectedResult.recurring, result.RecurrenceRules.Any());
         Assert.Equal(expectedResult.allDay, result.IsAllDay);
-        Assert.Equal(expectedResult.endUtc, result.RecurrenceRules.First().Until);
-        Assert.Equal(expectedResult.startUtc, result.ExceptionDates.First().First().StartTime.AsUtc);
+		Assert.Equal(expectedResult.startUtc, result.DtStart.AsUtc);
+		Assert.Equal(expectedResult.endUtc, result.DtEnd.AsUtc);
+        Assert.Equal(expectedResult.until, result.RecurrenceRules.First().Until);
+        Assert.Equal(expectedResult.exdate, result.ExceptionDates.First().First().StartTime.AsUtc);
     }
 
     [Theory]

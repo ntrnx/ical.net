@@ -3,7 +3,7 @@ using Ical.Net.Serialization.DataTypes;
 
 namespace Ical.Net.DataTypes
 {
-    /// <summary> Represents an iCalendar period of time. </summary>    
+    /// <summary> Represents an iCalendar period of time. </summary>
     public class Period : EncodableDataType, IComparable<Period>
     {
         public Period() { }
@@ -113,7 +113,7 @@ namespace Ical.Net.DataTypes
                     return;
                 }
                 _startTime = value;
-                // ExtrapolateTimes();
+                ExtrapolateTimes();
             }
         }
 
@@ -128,7 +128,7 @@ namespace Ical.Net.DataTypes
                     return;
                 }
                 _endTime = value;
-                // ExtrapolateTimes();
+                ExtrapolateTimes();
             }
         }
 
@@ -152,7 +152,7 @@ namespace Ical.Net.DataTypes
                     return;
                 }
                 _duration = value;
-                // ExtrapolateTimes();
+                ExtrapolateTimes();
             }
         }
 

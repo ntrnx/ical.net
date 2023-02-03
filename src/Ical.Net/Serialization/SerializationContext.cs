@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ical.Net.CalendarComponents;
 
 namespace Ical.Net.Serialization
 {
@@ -33,8 +34,10 @@ namespace Ical.Net.Serialization
             }
         }
 
-        private readonly Stack<WeakReference> _mStack = new Stack<WeakReference>();
-        private ServiceProvider _mServiceProvider = new ServiceProvider();
+
+        private readonly Stack<WeakReference> _mStack = new ();
+        private ServiceProvider _mServiceProvider = new ();
+		private readonly Dictionary<string, TimeZoneInfo> _vTimeZones;
 
         public SerializationContext()
         {
@@ -44,7 +47,8 @@ namespace Ical.Net.Serialization
             SetService(new DataTypeMapper());
             SetService(new EncodingStack());
             SetService(new EncodingProvider(this));
-        }
+			_vTimeZones = new Dictionary<string, TimeZoneInfo>();
+		}
 
         public virtual void Push(object item)
         {
@@ -107,5 +111,38 @@ namespace Ical.Net.Serialization
         {
             _mServiceProvider.RemoveService(name);
         }
-    }
+
+		/// <summary>
+		/// Adds <see cref="TimeZoneInfo"/> object taken from <paramref name="vTimeZone"/>.
+		/// If <see cref="TimeZoneInfo"/> object is <see cref="null"/> nothing is added.
+		/// </summary>
+		/// <param name="vTimeZone"><see cref="VTimeZone"/> object calculated after parsing VTIMEZONE section</param>
+		public virtual void AddTimeZone(VTimeZone vTimeZone)
+		{
+			if (vTimeZone.TimeZoneInfo != null)
+			{
+				_vTimeZones.Add(vTimeZone.TzId, vTimeZone.TimeZoneInfo);
+			}
+		}
+
+		/// <summary>
+		/// Gets <see cref="TimeZoneInfo"/> according to <paramref name="tzId"/> value.
+		/// </summary>
+		/// <param name="tzId">TZID</param>
+		/// <returns>
+		/// <see cref="TimeZoneInfo"/> corresponding to <paramref name="tzId"/>.
+		/// <see cref="null"/> if there is no time zone ifo with such <paramref name="tzId"/>
+		/// </returns>
+		public virtual TimeZoneInfo GetTimeZone(string tzId)
+		{
+			if (_vTimeZones.ContainsKey(tzId))
+			{
+				return _vTimeZones[tzId];
+			}
+
+			return default;
+		}
+
+		public virtual void ClearTimeZones() => _vTimeZones.Clear();
+	}
 }

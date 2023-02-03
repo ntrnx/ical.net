@@ -10,7 +10,10 @@ namespace Ical.Net.Serialization.DataTypes
     {
         public DateTimeSerializer() { }
 
-        public DateTimeSerializer(SerializationContext ctx) : base(ctx) { }
+		public DateTimeSerializer(SerializationContext ctx, CalendarProperty property)
+			: base(ctx, property)
+		{
+		}
 
         private DateTime CoerceDateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)
         {
@@ -47,7 +50,7 @@ namespace Ical.Net.Serialization.DataTypes
                 return null;
             }
 
-            // RFC 5545 3.3.5: 
+            // RFC 5545 3.3.5:
             // The date with UTC time, or absolute time, is identified by a LATIN
             // CAPITAL LETTER Z suffix character, the UTC designator, appended to
             // the time value. The "TZID" property parameter MUST NOT be applied to DATE-TIME
@@ -152,6 +155,18 @@ namespace Ical.Net.Serialization.DataTypes
             {
                 dt.TzId = "UTC";
             }
+			else
+			{
+				if (CalendarProperty?.Parameters.ContainsKey("TZID") ?? false)
+				{
+					string tzId = CalendarProperty.Parameters.Get("TZID");
+					TimeZoneInfo timeZoneInfo = SerializationContext.GetTimeZone(tzId);
+					if (timeZoneInfo != null)
+					{
+						dt.TimeZoneInfo = timeZoneInfo;
+					}
+				}
+			}
 
             dt.Value = CoerceDateTime(year, month, date, hour, minute, second, kind);
             return dt;

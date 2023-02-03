@@ -7,16 +7,36 @@ namespace Ical.Net.Serialization
 {
     public class DataTypeSerializerFactory : ISerializerFactory
     {
-        /// <summary>
-        /// Returns a serializer that can be used to serialize and object
-        /// of type <paramref name="objectType"/>.
-        /// <note>
-        ///     TODO: Add support for caching.
-        /// </note>
-        /// </summary>
-        /// <param name="objectType">The type of object to be serialized.</param>
-        /// <param name="ctx">The serialization context.</param>
-        public virtual ISerializer Build(Type objectType, SerializationContext ctx)
+		public virtual ISerializer Build(Type objectType, SerializationContext ctx, CalendarProperty property)
+		{
+			if (typeof (IDateTime).IsAssignableFrom(objectType))
+			{
+				return new DateTimeSerializer(ctx, property);
+			}
+
+			if (typeof (PeriodList).IsAssignableFrom(objectType))
+			{
+				return new PeriodListSerializer(ctx, property);
+			}
+
+			if (typeof (Period).IsAssignableFrom(objectType))
+			{
+				return new PeriodSerializer(ctx, property);
+			}
+			return Build(objectType, ctx);
+		}
+
+		/// <summary>
+		/// Returns a serializer that can be used to serialize and object
+		/// of type <paramref name="objectType"/>.
+		/// <note>
+		///     TODO: Add support for caching.
+		/// </note>
+		/// </summary>
+		/// <param name="objectType">The type of object to be serialized.</param>
+		/// <param name="ctx">The serialization context.</param>
+		/// <param name="property">Properties needed for deserialization</param>
+		public virtual ISerializer Build(Type objectType, SerializationContext ctx)
         {
             if (objectType != null)
             {
@@ -29,10 +49,6 @@ namespace Ical.Net.Serialization
                 else if (typeof (Attendee).IsAssignableFrom(objectType))
                 {
                     s = new AttendeeSerializer(ctx);
-                }
-                else if (typeof (IDateTime).IsAssignableFrom(objectType))
-                {
-                    s = new DateTimeSerializer(ctx);
                 }
                 else if (typeof (FreeBusyEntry).IsAssignableFrom(objectType))
                 {
@@ -48,11 +64,11 @@ namespace Ical.Net.Serialization
                 }
                 else if (typeof (Period).IsAssignableFrom(objectType))
                 {
-                    s = new PeriodSerializer(ctx);
+                    s = new PeriodSerializer(ctx, default);
                 }
                 else if (typeof (PeriodList).IsAssignableFrom(objectType))
                 {
-                    s = new PeriodListSerializer(ctx);
+                    s = new PeriodListSerializer(ctx, default);
                 }
                 else if (typeof (RecurrencePattern).IsAssignableFrom(objectType))
                 {
@@ -78,6 +94,10 @@ namespace Ical.Net.Serialization
                 {
                     s = new WeekDaySerializer(ctx);
                 }
+				else if (typeof (IDateTime).IsAssignableFrom(objectType))
+				{
+					return new DateTimeSerializer(ctx, default);
+				}
                 // Default to a string serializer, which simply calls
                 // ToString() on the value to serialize it.
                 else

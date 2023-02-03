@@ -254,12 +254,10 @@ namespace Ical.Net.DataTypes
 
                     if (!string.IsNullOrWhiteSpace(TzId))
                     {
-                        VTimeZone vTimeZone = Calendar.TimeZones.FirstOrDefault(tz => tz.TzId == TzId);
-                        TimeZoneInfo ctz = TimeZoneCreator.CreateTimeZone(vTimeZone);
-                        if (ctz != null)
+                        if (TimeZoneInfo != null)
                         {
                             DateTime toCovert = DateTime.SpecifyKind(_value, DateTimeKind.Unspecified);
-                            _asUtc = TimeZoneInfo.ConvertTimeToUtc(toCovert, ctz!);
+                            _asUtc = TimeZoneInfo.ConvertTimeToUtc(toCovert, TimeZoneInfo);
                         }
                         else
                         {
@@ -310,6 +308,7 @@ namespace Ical.Net.DataTypes
             set => _hasTime = value;
         }
 
+		public TimeZoneInfo TimeZoneInfo { get; set; }
         private string _tzId = string.Empty;
 
         /// <summary>

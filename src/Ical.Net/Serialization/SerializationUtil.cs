@@ -18,10 +18,12 @@ namespace Ical.Net.Serialization
         }
 
         public static void OnDeserialized(object obj)
-        {
-            foreach (var mi in GetDeserializedMethods(obj.GetType()))
-            {
-                mi.Invoke(obj, new object[] { new StreamingContext() });
+		{
+			var enumerator = GetDeserializedMethods(obj.GetType());
+            foreach (var mi in enumerator)
+			{
+				var arg2 = new object[] { new StreamingContext() };
+                mi.Invoke(obj, arg2);
             }
         }
 
