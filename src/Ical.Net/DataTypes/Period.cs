@@ -105,7 +105,7 @@ namespace Ical.Net.DataTypes
         {
             get => _startTime.HasTime
                 ? _startTime
-                : new CalDateTime(new DateTime(_startTime.Value.Year, _startTime.Value.Month, _startTime.Value.Day, 0, 0, 0), _startTime.TzId);
+                : new CalDateTime(new DateTime(_startTime.Value.Year, _startTime.Value.Month, _startTime.Value.Day, 0, 0, 0), _startTime.TzId, _startTime.TimeZoneInfo);
             set
             {
                 if (Equals(_startTime, value))

@@ -28,7 +28,7 @@ namespace Ical.Net.DataTypes
 
         public CalDateTime(IDateTime value)
         {
-            Initialize(value.Value, value.TzId, null);
+            Initialize(value.Value, value.TzId, default(Calendar));
         }
 
         public CalDateTime(DateTime value) : this(value, null) { }
@@ -40,18 +40,22 @@ namespace Ical.Net.DataTypes
         /// </summary>
         public CalDateTime(DateTime value, string tzId)
         {
-            Initialize(value, tzId, null);
+            Initialize(value, tzId, default(Calendar));
+        }
+        public CalDateTime(DateTime value, string tzId, TimeZoneInfo timeZoneInfo)
+        {
+            Initialize(value, tzId, timeZoneInfo);
         }
 
         public CalDateTime(int year, int month, int day, int hour, int minute, int second)
         {
-            Initialize(year, month, day, hour, minute, second, null, null);
+            Initialize(year, month, day, hour, minute, second, null, default(Calendar));
             HasTime = true;
         }
 
         public CalDateTime(int year, int month, int day, int hour, int minute, int second, string tzId)
         {
-            Initialize(year, month, day, hour, minute, second, tzId, null);
+            Initialize(year, month, day, hour, minute, second, tzId, default(Calendar));
             HasTime = true;
         }
 
@@ -94,7 +98,22 @@ namespace Ical.Net.DataTypes
             HasDate = true;
             HasTime = value.Second != 0 || value.Minute != 0 || value.Hour != 0;
             AssociatedObject = cal;
+
+			if (cal?.TimeZones.ContainsKey(tzId) ?? false)
+			{
+				VTimeZone vTimeZone = cal.TimeZones.First(vtz => vtz.TzId == tzId);
+				TimeZoneInfo = TimeZoneCreator.CreateTimeZone(vTimeZone);
+			}
         }
+
+		private void Initialize(DateTime value, string tzId, TimeZoneInfo timeZoneInfo)
+		{
+			Value = new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Kind);
+			HasDate = true;
+			HasTime = value.Second != 0 || value.Minute != 0 || value.Hour != 0;
+			TimeZoneInfo = timeZoneInfo;
+			TzId = tzId;
+		}
 
         private DateTime CoerceDateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)
         {
