@@ -283,7 +283,7 @@ namespace Ical.Net.CalendarComponents
 			TimeZoneInfo = TimeZoneCreator.CreateTimeZone(this);
 		}
 
-		public TimeZoneInfo TimeZoneInfo { get; set; }
+		public TimeZoneInfo TimeZoneInfo { get; private set; }
 
 		private DateTimeZone _nodaZone;
         private string _tzId;
