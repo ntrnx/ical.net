@@ -895,7 +895,7 @@ namespace Ical.Net.Evaluation
         {
             // Turn each resulting date/time into an IDateTime and associate it
             // with the reference date.
-            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId);
+            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId, referenceDate.TimeZoneInfo);
 
             // NOTE: fixes bug #2938007 - hasTime missing
             newDt.HasTime = referenceDate.HasTime;
