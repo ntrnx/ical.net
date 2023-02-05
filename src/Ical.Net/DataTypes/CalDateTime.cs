@@ -9,8 +9,41 @@ using NodaTime;
 namespace Ical.Net.DataTypes
 {
     /// <summary>
-    /// The iCalendar equivalent of the .NET <see cref="DateTime"/> class.
+    /// The iCalendar expansion of the .NET <see cref="DateTime"/> class.
     /// <remarks>
+    /// <see cref="CalDateTime"/> properties are get-only. You can change property values
+    /// only through the methods. Changing one property may adjusts other properties accordingly.
+    /// <para>
+    /// You can get <see cref="CalDateTime"/> value from the <see cref="Value"/> property.
+    /// <see cref="Value"/> does not use <see cref="DateTimeKind.Local"/> kind modifier.
+    /// Possible options are the floowing:
+    /// </para>
+    /// <list type="number">
+    ///		<item>
+    ///			<see cref="DateTimeKind.Utc"/> - then <see cref="TzId"/> is set to "UTC"
+    ///			and <see cref="TimeZoneInfo"/> is set to <see cref="TimeZoneInfo.Utc"/>
+    ///		</item>
+	///		<item>
+	///			<see cref="DateTimeKind.Unspecified"/> and <see cref="TzId"/> is null
+	///			and <see cref="TimeZoneInfo"/> is null. This value does not belong to any time zone,
+	///			it means that depending on the time zone it will have different UTC value.
+	///		</item>
+	///		<item>
+	///			<see cref="DateTimeKind.Unspecified"/> and <see cref="TzId"/> is set to some "TimeZone"
+	///			and <see cref="TimeZoneInfo"/> is also set to the same "TimeZone". This value does not belong to any time zone,
+	///			it means that depending on the time zone it will have different UTC value.
+	///		</item>
+    /// </list>
+    /// <p>Time zone rules</p>
+    /// <list type="number">
+    ///		<item>
+    ///			You cannot change time zone value of the <see cref="CalDateTime"/> instance.
+    ///		</item>
+	///		<item>
+	///			To get <see cref="CalDateTime"/> instance with the <see cref="Value"/> but in the different time zone
+	///			need to use constructor.
+	///		</item>
+    /// </list>
     /// In addition to the features of the <see cref="DateTime"/> class, the <see cref="CalDateTime"/>
     /// class handles time zone differences, and integrates seamlessly into the iCalendar framework.
     /// </remarks>
@@ -28,82 +61,27 @@ namespace Ical.Net.DataTypes
 
         public CalDateTime(IDateTime value)
         {
-            Initialize(value.Value, value.TzId, default(Calendar));
+            Initialize(value.Value, value.TzId, value.TimeZoneInfo);
         }
 
-        public CalDateTime(DateTime value) : this(value, null) { }
+        public CalDateTime(DateTime value) : this(value, default(string), default(TimeZoneInfo)) { }
 
         /// <summary>
         /// Specifying a `tzId` value will override `value`'s `DateTimeKind` property. If the time zone specified is UTC, the underlying `DateTimeKind` will be
         /// `Utc`. If a non-UTC time zone is specified, the underlying `DateTimeKind` property will be `Local`. If no time zone is specified, the `DateTimeKind`
         /// property will be left untouched.
         /// </summary>
-        public CalDateTime(DateTime value, string tzId)
-        {
-            Initialize(value, tzId, default(Calendar));
-        }
+        // public CalDateTime(DateTime value, string tzId)
+        // {
+        //     Initialize(value, tzId, default(Calendar));
+        // }
         public CalDateTime(DateTime value, string tzId, TimeZoneInfo timeZoneInfo)
         {
-            Initialize(value, tzId, timeZoneInfo);
-        }
-
-        public CalDateTime(int year, int month, int day, int hour, int minute, int second)
-        {
-            Initialize(year, month, day, hour, minute, second, null, default(Calendar));
-            HasTime = true;
-        }
-
-        public CalDateTime(int year, int month, int day, int hour, int minute, int second, string tzId)
-        {
-            Initialize(year, month, day, hour, minute, second, tzId, default(Calendar));
-            HasTime = true;
-        }
-
-        public CalDateTime(int year, int month, int day, int hour, int minute, int second, string tzId, Calendar cal)
-        {
-            Initialize(year, month, day, hour, minute, second, tzId, cal);
-            HasTime = true;
-        }
-
-        public CalDateTime(int year, int month, int day) : this(year, month, day, 0, 0, 0) { }
-        public CalDateTime(int year, int month, int day, string tzId) : this(year, month, day, 0, 0, 0, tzId) { }
-
-        public CalDateTime(string value)
-        {
-            var serializer = new DateTimeSerializer();
-            CopyFrom(serializer.Deserialize(new StringReader(value)) as ICopyable);
-        }
-
-        private void Initialize(int year, int month, int day, int hour, int minute, int second, string tzId, Calendar cal)
-        {
-            Initialize(CoerceDateTime(year, month, day, hour, minute, second, DateTimeKind.Local), tzId, cal);
-        }
-
-        private void Initialize(DateTime value, string tzId, Calendar cal)
-        {
-            if (!string.IsNullOrWhiteSpace(tzId) && !tzId.Equals("UTC", StringComparison.OrdinalIgnoreCase))
-            {
-                // Definitely local
-                value = DateTime.SpecifyKind(value, DateTimeKind.Local);
-                TzId = tzId;
-            }
-            else if (string.Equals("UTC", tzId, StringComparison.OrdinalIgnoreCase) || value.Kind == DateTimeKind.Utc)
-            {
-                // Probably UTC
-                value = DateTime.SpecifyKind(value, DateTimeKind.Utc);
-                TzId = "UTC";
-            }
-
-            Value = new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Kind);
-            HasDate = true;
-            HasTime = value.Second != 0 || value.Minute != 0 || value.Hour != 0;
-            AssociatedObject = cal;
-
-			if (cal?.TimeZones.ContainsKey(tzId) ?? false)
+			if (tzId != timeZoneInfo.Id)
 			{
-				VTimeZone vTimeZone = cal.TimeZones.First(vtz => vtz.TzId == tzId);
-				TimeZoneInfo = TimeZoneCreator.CreateTimeZone(vTimeZone);
+				throw new ArgumentException($"tzId {tzId} is not equal to timeZoneInfo.Id {timeZoneInfo.Id}");
 			}
+            Initialize(value, tzId, timeZoneInfo);
         }
 
 		private void Initialize(DateTime value, string tzId, TimeZoneInfo timeZoneInfo)
@@ -111,34 +89,12 @@ namespace Ical.Net.DataTypes
 			Value = new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Kind);
 			HasDate = true;
 			HasTime = value.Second != 0 || value.Minute != 0 || value.Hour != 0;
-			TimeZoneInfo = timeZoneInfo;
+			if (value.Kind)
+			{
+				TimeZoneInfo = timeZoneInfo;
+			}
 			TzId = tzId;
 		}
-
-        private DateTime CoerceDateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)
-        {
-            var dt = DateTime.MinValue;
-
-            // NOTE: determine if a date/time value exceeds the representable date/time values in .NET.
-            // If so, let's automatically adjust the date/time to compensate.
-            // FIXME: should we have a parsing setting that will throw an exception
-            // instead of automatically adjusting the date/time value to the
-            // closest representable date/time?
-            try
-            {
-                if (year > 9999)
-                {
-                    dt = DateTime.MaxValue;
-                }
-                else if (year > 0)
-                {
-                    dt = new DateTime(year, month, day, hour, minute, second, kind);
-                }
-            }
-            catch { }
-
-            return dt;
-        }
 
         public override ICalendarObject AssociatedObject
         {
@@ -165,6 +121,8 @@ namespace Ical.Net.DataTypes
             _value = dt.Value;
             _hasDate = dt.HasDate;
             _hasTime = dt.HasTime;
+			TimeZoneInfo = dt.TimeZoneInfo;
+			_tzId = dt.TzId;
 
             AssociateWith(dt);
         }
@@ -256,7 +214,7 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        private DateTime _asUtc = DateTime.MinValue;
+        private DateTime _asUtc;
         /// <summary>
         /// Returns a representation of the DateTime in Coordinated Universal Time (UTC)
         /// </summary>
@@ -264,7 +222,7 @@ namespace Ical.Net.DataTypes
         {
             get
             {
-                if (_asUtc == DateTime.MinValue)
+                if (_asUtc )
                 {
                     // In order of weighting:
                     //  1) Specified TzId
@@ -327,6 +285,8 @@ namespace Ical.Net.DataTypes
             set => _hasTime = value;
         }
 
+		public bool HasTimeZone { get; }
+
 		public TimeZoneInfo TimeZoneInfo { get; set; }
         private string _tzId = string.Empty;
 
@@ -345,6 +305,7 @@ namespace Ical.Net.DataTypes
                 }
                 return _tzId;
             }
+            /*
             set
             {
                 if (string.Equals(_tzId, value, StringComparison.OrdinalIgnoreCase))
@@ -371,6 +332,7 @@ namespace Ical.Net.DataTypes
                 Parameters.Set("TZID", value);
                 _tzId = value;
             }
+			*/
         }
 
         public string TimeZoneName => TzId;
@@ -401,12 +363,18 @@ namespace Ical.Net.DataTypes
 
         /// <summary>
         /// Returns a representation of the IDateTime in the specified time zone
+        /// <para>
+        /// If <see cref="IDateTime"/> instance does not have time zone, then the new <see cref="CalDateTime"/> instance with the same values of the
+        /// year, month, day, hours, minutes, and seconds and the specified <paramref name="tzId"/> is returned.
+        /// If
+        /// </para>
         /// </summary>
+        /// <returns>New <see cref="CalDateTime"/> instance</returns>
         public IDateTime ToTimeZone(string tzId)
         {
             if (string.IsNullOrWhiteSpace(tzId))
             {
-                throw new ArgumentException("You must provide a valid time zone id", nameof(tzId));
+                throw new ArgumentException("You must provide a time zone id", nameof(tzId));
             }
 
             // If TzId is empty, it's a system-local datetime, so we should use the system time zone as the starting point.
@@ -418,8 +386,8 @@ namespace Ical.Net.DataTypes
             var converted = zonedOriginal.WithZone(DateUtil.GetZone(tzId));
 
             return converted.Zone == DateTimeZone.Utc
-                ? new CalDateTime(converted.ToDateTimeUtc(), tzId)
-                : new CalDateTime(DateTime.SpecifyKind(converted.ToDateTimeUnspecified(), DateTimeKind.Local), tzId);
+                ? new CalDateTime(converted.ToDateTimeUtc(), tzId, TimeZoneInfo.Utc)
+                : new CalDateTime(DateTime.SpecifyKind(converted.ToDateTimeUnspecified(), DateTimeKind.Local), tzId, default(TimeZoneInfo));
         }
 
         /// <summary>

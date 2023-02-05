@@ -8,7 +8,7 @@ namespace Ical.Net.CalendarComponents
 {
     /// <summary>
     /// Represents a unique component, a component with a unique UID,
-    /// which can be used to uniquely identify the component.    
+    /// which can be used to uniquely identify the component.
     /// </summary>
     public class UniqueComponent : CalendarComponent, IUniqueComponent, IComparable<UniqueComponent>
     {
@@ -16,7 +16,7 @@ namespace Ical.Net.CalendarComponents
         // This method will add the UID of a related component
         // to the Related_To property, along with any "RELTYPE"
         // parameter ("PARENT", "CHILD", "SIBLING", or other)
-        // TODO: Add RemoveRelationship() public method.        
+        // TODO: Add RemoveRelationship() public method.
 
         public UniqueComponent()
         {
@@ -42,7 +42,7 @@ namespace Ical.Net.CalendarComponents
             {
                 // icalendar RFC doesn't care about sub-second time resolution, so shave off everything smaller than seconds.
                 var utcNow = DateTime.UtcNow.Truncate(TimeSpan.FromSeconds(1));
-                DtStamp = new CalDateTime(utcNow, "UTC");
+                DtStamp = new CalDateTime(utcNow, "UTC", TimeZoneInfo.Utc);
             }
         }
 

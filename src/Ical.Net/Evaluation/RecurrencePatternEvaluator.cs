@@ -10,30 +10,30 @@ namespace Ical.Net.Evaluation
     /// <summary>
     /// Much of this code comes from iCal4j, as Ben Fortuna has done an
     /// excellent job with the recurrence pattern evaluation there.
-    /// 
+    ///
     /// Here's the iCal4j license:
     /// ==================
     ///  iCal4j - License
     ///  ==================
-    ///  
+    ///
     /// Copyright (c) 2009, Ben Fortuna
     /// All rights reserved.
-    /// 
+    ///
     /// Redistribution and use in source and binary forms, with or without
     /// modification, are permitted provided that the following conditions
     /// are met:
-    /// 
+    ///
     /// o Redistributions of source code must retain the above copyright
     /// notice, this list of conditions and the following disclaimer.
-    /// 
+    ///
     /// o Redistributions in binary form must reproduce the above copyright
     /// notice, this list of conditions and the following disclaimer in the
     /// documentation and/or other materials provided with the distribution.
-    /// 
+    ///
     /// o Neither the name of Ben Fortuna nor the names of any other contributors
     /// may be used to endorse or promote products derived from this software
     /// without specific prior written permission.
-    /// 
+    ///
     /// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
     /// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
     /// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -65,8 +65,10 @@ namespace Ical.Net.Evaluation
 
             // Convert the UNTIL value to one that matches the same time information as the reference date
             if (r.Until != DateTime.MinValue)
-            {
-                r.Until = DateUtil.MatchTimeZone(referenceDate, new CalDateTime(r.Until, referenceDate.TzId)).Value;
+			{
+				var newUntil = new CalDateTime(r.Until);
+				var matchTimeZone = DateUtil.MatchTimeZone(referenceDate, newUntil);
+                r.Until = matchTimeZone.Value;
             }
 
             if (r.Frequency > FrequencyType.Secondly && r.BySecond.Count == 0 && referenceDate.HasTime
@@ -263,7 +265,7 @@ namespace Ical.Net.Evaluation
                 {
                     break;
                 }
-                
+
                 if (pattern.Count >= 1 && dates.Count >= pattern.Count)
                 {
                     break;
@@ -887,7 +889,7 @@ namespace Ical.Net.Evaluation
         {
             // Turn each resulting date/time into an IDateTime and associate it
             // with the reference date.
-            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId);
+            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId, referenceDate.TimeZoneInfo);
 
             // NOTE: fixes bug #2938007 - hasTime missing
             newDt.HasTime = referenceDate.HasTime;

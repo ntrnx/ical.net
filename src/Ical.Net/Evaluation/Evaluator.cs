@@ -43,7 +43,7 @@ namespace Ical.Net.Evaluation
 
         protected IDateTime ConvertToIDateTime(DateTime dt, IDateTime referenceDate)
         {
-            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId);
+            IDateTime newDt = new CalDateTime(dt, referenceDate.TzId, referenceDate.TimeZoneInfo);
             newDt.AssociateWith(referenceDate);
             return newDt;
         }

@@ -133,6 +133,12 @@ namespace Ical.Net.DataTypes
         }
 
         private TimeSpan _duration;
+
+		/// <summary>
+		/// If <see cref="StartTime"/> has only date, i.e. VALUE=DATE,
+		/// and <see cref="EndTime"/> is null, then it's usually reference to ALL-DAY event.
+		/// Then <see cref="Duration"/> is automatically calculated as 1 day.
+		/// </summary>
         public virtual TimeSpan Duration
         {
             get

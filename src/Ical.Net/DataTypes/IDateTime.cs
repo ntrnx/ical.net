@@ -37,27 +37,34 @@ namespace Ical.Net.DataTypes
         /// Use IsUtc along with the TZID to control how this
         /// date/time is handled.
         /// </summary>
-        DateTime Value { get; set; }
+        DateTime Value { get; }
 
         /// <summary>
-        /// Gets/sets whether or not this date/time value contains a 'date' part.
+        /// Gets whether or not this date/time value contains a 'date' part.
         /// </summary>
-        bool HasDate { get; set; }
+        bool HasDate { get; }
 
         /// <summary>
-        /// Gets/sets whether or not this date/time value contains a 'time' part.
+        /// Gets whether or not this date/time value contains a 'time' part.
         /// </summary>
-        bool HasTime { get; set; }
-
-        /// <summary>
-        /// Gets/sets the time zone ID for this date/time value.
-        /// </summary>
-        string TzId { get; set; }
+        bool HasTime { get; }
 
 		/// <summary>
-		/// Gets/Sets Microsoft TimeZoneInfo value based on the parsed VTIMEZONE information from teh VCALENDAR
+		/// Indicates whether this date/time value is bound to any time zone
 		/// </summary>
-		TimeZoneInfo TimeZoneInfo { get; set; }
+		bool HasTimeZone { get; }
+
+        /// <summary>
+        /// Gets the time zone ID for this date/time value.
+        /// If <see cref="TzId"/> is set then <see cref="TimeZoneInfo"/> always has the corresponding value.
+        /// </summary>
+        string TzId { get; }
+
+		/// <summary>
+		/// Gets Microsoft TimeZoneInfo value based on the parsed VTIMEZONE information from teh VCALENDAR
+		/// <see cref="TimeZoneInfo.Id"/> is always the same as <see cref="TzId"/>
+		/// </summary>
+		TimeZoneInfo TimeZoneInfo { get; }
 
 		/// <summary>
         /// Gets the year for this date/time value.

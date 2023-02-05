@@ -29,7 +29,7 @@ namespace Ical.Net.Evaluation
             var start = recurrable.Start;
             start.AssociatedObject = recurrable as ICalendarObject;
 
-            // Change the time zone of periodStart/periodEnd as needed 
+            // Change the time zone of periodStart/periodEnd as needed
             // so they can be used during the evaluation process.
 
             periodStart.TzId = start.TzId;
