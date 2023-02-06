@@ -402,11 +402,11 @@ namespace Ical.Net.DataTypes
         /// <summary>
         /// Returns a representation of the IDateTime in the specified time zone
         /// </summary>
-        public IDateTime ToTimeZone(string tzId)
+        public IDateTime ToTimeZone(string targetTzId)
         {
-            if (string.IsNullOrWhiteSpace(tzId))
+            if (string.IsNullOrWhiteSpace(targetTzId))
             {
-                throw new ArgumentException("You must provide a valid time zone id", nameof(tzId));
+                throw new ArgumentException("You must provide a valid time zone id", nameof(targetTzId));
             }
 
             // If TzId is empty, it's a system-local datetime, so we should use the system time zone as the starting point.
@@ -414,12 +414,25 @@ namespace Ical.Net.DataTypes
                 ? TimeZoneInfo.Local.Id
                 : TzId;
 
+			if (TimeZoneInfo != null && TimeZoneInfo.Id == targetTzId)
+			{
+				return new CalDateTime(Value, targetTzId, TimeZoneInfo);
+			}
+			else if (Calendar != null && Calendar.TimeZones.ContainsKey(targetTzId))
+			{
+				TimeZoneInfo targetTzInfo = Calendar.TimeZones.First(vtz => vtz.TzId == targetTzId).TimeZoneInfo;
+				if (targetTzInfo != null)
+				{
+					return new CalDateTime(Value, targetTzId, targetTzInfo);
+				}
+			}
+
             var zonedOriginal = DateUtil.ToZonedDateTimeLeniently(Value, originalTzId);
-            var converted = zonedOriginal.WithZone(DateUtil.GetZone(tzId));
+            var converted = zonedOriginal.WithZone(DateUtil.GetZone(targetTzId));
 
             return converted.Zone == DateTimeZone.Utc
-                ? new CalDateTime(converted.ToDateTimeUtc(), tzId)
-                : new CalDateTime(DateTime.SpecifyKind(converted.ToDateTimeUnspecified(), DateTimeKind.Local), tzId);
+                ? new CalDateTime(converted.ToDateTimeUtc(), targetTzId)
+                : new CalDateTime(DateTime.SpecifyKind(converted.ToDateTimeUnspecified(), DateTimeKind.Local), targetTzId);
         }
 
         /// <summary>

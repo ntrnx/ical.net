@@ -1,4 +1,5 @@
 using Ical.Net.CalendarComponents;
+using Ical.Net.DataTypes;
 using Xunit;
 
 namespace Ical.Net.TestsTimeZone;
@@ -20,9 +21,11 @@ public class OccurrencesTest
 	{
 		DateTime begin = DateTime.SpecifyKind(DateTime.Parse(beginS), DateTimeKind.Utc);
 		DateTime end = DateTime.SpecifyKind(DateTime.Parse(endS), DateTimeKind.Utc);
+		CalDateTime beginCdt = new CalDateTime(begin, "UTC", TimeZoneInfo.Utc);
+		CalDateTime endCdt = new CalDateTime(end, "UTC", TimeZoneInfo.Utc);
 
 		CalendarEvent result = Calendar.Load(Samples.Recurring[source].body).Events.First();
-		var resultOcc = result.GetOccurrences(begin, end);
+		var resultOcc = result.GetOccurrences(beginCdt, endCdt);
 
 		Assert.Equal(occNum, resultOcc.Count);
 	}
