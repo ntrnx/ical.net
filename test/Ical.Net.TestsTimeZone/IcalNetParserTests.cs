@@ -101,6 +101,7 @@ public class IcalNetParserTests
     [InlineData("recurring_fixed_dates_tz_yek_msk_changed")]
     [InlineData("recurring_fixed_dates_tz_eu_west_msk_changed")]
     [InlineData("recurring_fixed_dates_tz_na_east_msk_changed")]
+    [InlineData("recurring_fixed_dates_tz_samara_msk_changed")]
     public void RecurringInstanceChanged(string eventType)
     {
         var events = Calendar.Load(Samples.RecurringInstanceChanged[eventType].body).Events;

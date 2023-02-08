@@ -60,6 +60,10 @@ namespace Ical.Net.DataTypes
         }
 
         public CalDateTime(int year, int month, int day) : this(year, month, day, 0, 0, 0) { }
+
+		/// <summary>
+		/// Creates YYYY-MM-DD 00:00:00 <see cref="CalDateTime"/> instance with the specified Time Zone.
+		/// </summary>
         public CalDateTime(int year, int month, int day, string tzId) : this(year, month, day, 0, 0, 0, tzId) { }
 
         public CalDateTime(string value)

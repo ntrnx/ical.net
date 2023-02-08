@@ -1152,6 +1152,55 @@ END:VCALENDAR",
                 startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-27T12:15:00"), DateTimeKind.Utc),
                 endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-01-27T12:45:00"), DateTimeKind.Utc))
         },
+		{"recurring_fixed_dates_tz_samara_msk_changed", (recurring: true, allDay: false,
+				body: @"
+BEGIN:VCALENDAR
+PRODID:CommuniGate Pro 6.4c1
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:Europe/Samara
+BEGIN:STANDARD
+DTSTART:20141026T020000
+TZOFFSETFROM:+0400
+TZOFFSETTO:+0400
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+ORGANIZER;CN=""Штирлиц"":MAILTO:stierlitz@cgdemo.ntrnx.com
+RRULE:FREQ=DAILY;INTERVAL=2
+DTSTAMP:20230208T124241Z
+UID:837929985.43.stierlitz
+SEQUENCE:4
+SUMMARY:SAM-MSK Feb 2 -> every 2 days 14:15-45
+DTSTART;TZID=Europe/Samara:20230202T141500
+DTEND;TZID=Europe/Samara:20230202T144500
+EXDATE;TZID=Europe/Samara:20230206T141500,20230214T141500,20230216T141500
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""Caldav Calendar"":MAILTO:caldav@cgdemo.ntrnx.com
+X-MICROSOFT-CDO-BUSYSTATUS:TENTATIVE
+LAST-MODIFIED:20230208T124234Z
+CREATED:20230208T123931Z
+PRIORITY:5
+END:VEVENT
+BEGIN:VEVENT
+ORGANIZER;CN=""Штирлиц"":MAILTO:stierlitz@cgdemo.ntrnx.com
+DTSTAMP:20230208T124241Z
+UID:837929985.43.stierlitz
+SEQUENCE:5
+SUMMARY:SAM-MSK Feb 2 -> every 2 days 14:15-45
+DTSTART:20230205T084500Z
+DTEND:20230205T091500Z
+RECURRENCE-ID;TZID=Europe/Samara:20230204T141500
+ATTENDEE;PARTSTAT=NEEDS-ACTION;ROLE=REQ-PARTICIPANT;RSVP=true;CN=""Caldav Calendar"":MAILTO:caldav@cgdemo.ntrnx.com
+X-MICROSOFT-CDO-BUSYSTATUS:TENTATIVE
+LAST-MODIFIED:20230208T124234Z
+CREATED:20230208T124234Z
+PRIORITY:5
+END:VEVENT
+END:VCALENDAR",
+				recurrenceId: DateTime.SpecifyKind(DateTime.Parse("2023-02-04T10:15:00"), DateTimeKind.Utc),
+				startUtc: DateTime.SpecifyKind(DateTime.Parse("2023-02-05T08:45:00"), DateTimeKind.Utc),
+				endUtc: DateTime.SpecifyKind(DateTime.Parse("2023-02-05T09:15:00"), DateTimeKind.Utc))
+		},
 
         // All day one instance changed
         {"recurring_all_day_msk_msk_changed", (recurring: true, allDay: true,

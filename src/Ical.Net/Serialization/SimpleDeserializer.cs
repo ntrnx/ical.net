@@ -180,22 +180,37 @@ namespace Ical.Net.Serialization
 
         private static IEnumerable<string> GetContentLines(TextReader reader)
         {
+            var currentLine = new StringBuilder();
             while (true)
             {
                 var nextLine = reader.ReadLine();
                 if (nextLine == null)
                 {
-                    yield break;
+                    break;
                 }
-
-				nextLine = nextLine.Trim();
 
                 if (nextLine.Length <= 0)
                 {
                     continue;
                 }
 
-                yield return nextLine;
+                if ((nextLine[0] == ' ' || nextLine[0] == '\t'))
+                {
+                    currentLine.Append(nextLine, 1, nextLine.Length - 1);
+                }
+                else
+                {
+                    if (currentLine.Length > 0)
+                    {
+                        yield return currentLine.ToString();
+                    }
+                    currentLine.Clear();
+                    currentLine.Append(nextLine);
+                }
+            }
+            if (currentLine.Length > 0)
+            {
+                yield return currentLine.ToString();
             }
         }
     }
