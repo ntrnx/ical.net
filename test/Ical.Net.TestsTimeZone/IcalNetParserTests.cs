@@ -4,6 +4,10 @@ using Xunit;
 
 namespace Ical.Net.TestsTimeZone;
 
+/// <summary>
+/// Проверяет, что различные типы событий, которые в полях используют TZID,
+/// парсятся корректно, т.е.возвращают корректные UTC значения для искомых полей.
+/// </summary>
 public class IcalNetParserTests
 {
     [Theory]

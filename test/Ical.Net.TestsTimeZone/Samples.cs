@@ -1,5 +1,8 @@
 namespace Ical.Net.TestsTimeZone;
 
+/// <summary>
+/// Класс с набором событий в iCalendar формате
+/// </summary>
 public static class Samples
 {
     public static Dictionary<string, (bool recurring, bool allDay, string body, DateTime startUtc, DateTime endUtc)> Single = new()
