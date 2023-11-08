@@ -95,8 +95,8 @@ namespace Ical.Net
 
         /// <summary>
         /// Gets or sets the name of the iCalObject.  For iCalendar components, this is the RFC 5545 name of the component.
-        /// </summary>        
-        public virtual string Name { get; set; }
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Returns the <see cref="Calendar"/> that this DDayiCalObject belongs to.
@@ -113,12 +113,11 @@ namespace Ical.Net
 
                 return obj as Calendar;
             }
-            protected set { }
         }
 
-        public virtual int Line { get; set; }
+        public int Line { get; set; }
 
-        public virtual int Column { get; set; }
+        public int Column { get; set; }
 
         public virtual object GetService(Type serviceType) => _serviceProvider.GetService(serviceType);
 

@@ -9,7 +9,7 @@ namespace Ical.Net
 {
     public class VTimeZoneInfo : CalendarComponent, IRecurrable
     {
-        TimeZoneInfoEvaluator _evaluator;
+		private TimeZoneInfoEvaluator _evaluator;
 
         public VTimeZoneInfo()
         {
@@ -50,15 +50,22 @@ namespace Ical.Net
             return base.Equals(obj);
         }
 
-        public virtual string TzId
-        {
-            get =>
-                !(Parent is VTimeZone tz)
-                    ? null
-                    : tz.TzId;
-        }
+		protected bool Equals(VTimeZoneInfo other)
+		{
+			return base.Equals(other) && Equals(_evaluator, other._evaluator);
+		}
 
-        /// <summary>
+		public override int GetHashCode()
+		{
+			return HashCode.Combine(base.GetHashCode(), _evaluator);
+		}
+
+		public virtual string TzId =>
+			!(Parent is VTimeZone tz)
+				? null
+				: tz.TzId;
+
+		/// <summary>
         /// Returns the name of the current Time Zone.
         /// <example>
         ///     The following are examples:
@@ -82,7 +89,7 @@ namespace Ical.Net
             }
         }
 
-        public virtual UtcOffset TZOffsetFrom
+        public virtual UtcOffset TzOffsetFrom
         {
             get => OffsetFrom;
             set => OffsetFrom = value;
@@ -100,7 +107,7 @@ namespace Ical.Net
             set => Properties.Set("TZOFFSETTO", value);
         }
 
-        public virtual UtcOffset TZOffsetTo
+        public virtual UtcOffset TzOffsetTo
         {
             get => OffsetTo;
             set => OffsetTo = value;
