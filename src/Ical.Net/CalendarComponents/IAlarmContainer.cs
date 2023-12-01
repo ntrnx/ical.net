@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Ical.Net.DataTypes;
 
 namespace Ical.Net.CalendarComponents
@@ -11,7 +11,7 @@ namespace Ical.Net.CalendarComponents
         ICalendarObjectList<Alarm> Alarms { get; }
 
         ///  <summary>
-        ///  Polls <see cref="Alarm"/>s for occurrences within the <see cref="Evaluate"/>d
+        ///  Polls <see cref="Alarm"/>s for occurrences within the evaluated
         ///  time frame of this <see cref="RecurringComponent"/>.  For each evaluated
         ///  occurrence if this component, each <see cref="Alarm"/> is polled for its
         ///  corresponding alarm occurrences.

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Ical.Net.CalendarComponents;
 
 namespace Ical.Net
 {
@@ -119,7 +120,7 @@ namespace Ical.Net
     }
 
     /// <summary>
-    /// Status codes available to an <see cref="Components.Event"/> item
+    /// Status codes available to an <see cref="CalendarEvent"/> item
     /// </summary>
     public static class EventStatus
     {

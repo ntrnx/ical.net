@@ -6,7 +6,7 @@ namespace Ical.Net.DataTypes
 {
     /// <summary>
     /// A class that represents the geographical location of an
-    /// <see cref="Components.Event"/> or <see cref="Todo"/> item.
+    /// <see cref="CalendarEvent"/> or <see cref="Todo"/> item.
     /// </summary>
     [DebuggerDisplay("{Latitude};{Longitude}")]
     public class GeographicLocation : EncodableDataType
