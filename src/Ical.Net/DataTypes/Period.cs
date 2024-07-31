@@ -86,17 +86,17 @@ namespace Ical.Net.DataTypes
 
         private void ExtrapolateTimes()
         {
-            if (EndTime == null && StartTime != null && Duration != default(TimeSpan))
+            if (EndTime == null && StartTime != null && Duration.HasValue)
             {
-                EndTime = StartTime.Add(Duration);
+                EndTime = StartTime.Add(Duration.Value);
             }
             else if (Duration == default(TimeSpan) && StartTime != null && EndTime != null)
             {
                 Duration = EndTime.Subtract(StartTime);
             }
-            else if (StartTime == null && Duration != default(TimeSpan) && EndTime != null)
+            else if (StartTime == null && Duration.HasValue && EndTime != null)
             {
-                StartTime = EndTime.Subtract(Duration);
+                StartTime = EndTime.Subtract(Duration.Value);
             }
         }
 
@@ -132,8 +132,8 @@ namespace Ical.Net.DataTypes
             }
         }
 
-        private TimeSpan _duration;
-        public virtual TimeSpan Duration
+        private TimeSpan? _duration;
+        public virtual TimeSpan? Duration
         {
             get
             {

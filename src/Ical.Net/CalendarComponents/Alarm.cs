@@ -102,7 +102,7 @@ namespace Ical.Net.CalendarComponents
                             dt = o.Period.EndTime;
                             if (d == default(TimeSpan))
                             {
-                                d = o.Period.Duration;
+                                d = o.Period.Duration ?? default(TimeSpan);
                             }
                         }
                         // Use the "last-found" duration as a reference point

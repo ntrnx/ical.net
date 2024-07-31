@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 
 namespace Ical.Net.Serialization
@@ -16,12 +16,13 @@ namespace Ical.Net.Serialization
             _mSerializationContext = ctx;
         }
 
-        protected byte[] Decode7Bit(string value)
+		[Obsolete("UTF-7 is obsolete.")]
+		protected byte[] Decode7Bit(string value)
         {
             try
             {
-                var utf7 = new UTF7Encoding();
-                return utf7.GetBytes(value);
+				var utf7 = new UTF7Encoding();
+				return utf7.GetBytes(value);
             }
             catch
             {
@@ -64,8 +65,10 @@ namespace Ical.Net.Serialization
             switch (encoding.ToUpper())
             {
                 case "7BIT":
-                    return Decode7Bit;
-                case "8BIT":
+#pragma warning disable CS0618 // Type or member is obsolete
+					return Decode7Bit;
+#pragma warning restore CS0618 // Type or member is obsolete
+				case "8BIT":
                     return Decode8Bit;
                 case "BASE64":
                     return DecodeBase64;
@@ -74,12 +77,13 @@ namespace Ical.Net.Serialization
             }
         }
 
-        protected string Encode7Bit(byte[] data)
+        [Obsolete("UTF-7 is obsolete.")]
+		protected string Encode7Bit(byte[] data)
         {
             try
             {
-                var utf7 = new UTF7Encoding();
-                return utf7.GetString(data);
+				var utf7 = new UTF7Encoding();
+				return utf7.GetString(data);
             }
             catch
             {
@@ -122,8 +126,10 @@ namespace Ical.Net.Serialization
             switch (encoding.ToUpper())
             {
                 case "7BIT":
-                    return Encode7Bit;
-                case "8BIT":
+#pragma warning disable CS0618 // Type or member is obsolete
+					return Encode7Bit;
+#pragma warning restore CS0618 // Type or member is obsolete
+				case "8BIT":
                     return Encode8Bit;
                 case "BASE64":
                     return EncodeBase64;
@@ -159,7 +165,7 @@ namespace Ical.Net.Serialization
             }
 
             // Decode the string into the current encoding
-            var encodingStack = _mSerializationContext.GetService(typeof (EncodingStack)) as EncodingStack;
+			var encodingStack = (EncodingStack)_mSerializationContext.GetService(typeof(EncodingStack));
             return encodingStack.Current.GetString(data);
         }
 

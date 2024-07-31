@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using Ical.Net.DataTypes;
@@ -92,7 +92,7 @@ namespace Ical.Net.Serialization.DataTypes
             }
 
             // Only return an object if it has been deserialized correctly.
-            if (p.StartTime != null && p.Duration != null)
+            if (p.StartTime != null && p.Duration.HasValue)
             {
                 return p;
             }
