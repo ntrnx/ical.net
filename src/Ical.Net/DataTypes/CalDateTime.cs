@@ -378,18 +378,13 @@ namespace Ical.Net.DataTypes
         /// </summary>
         public IDateTime ToTimeZone(string tzId)
         {
-            if (string.IsNullOrWhiteSpace(tzId))
-            {
-                throw new ArgumentException("You must provide a valid time zone id", nameof(tzId));
-            }
-
             // If TzId is empty, it's a system-local datetime, so we should use the system time zone as the starting point.
-            var originalTzId = string.IsNullOrWhiteSpace(TzId)
+            string originalTzId = string.IsNullOrWhiteSpace(TzId)
                 ? TimeZoneInfo.Local.Id
                 : TzId;
 
-            var zonedOriginal = DateUtil.ToZonedDateTimeLeniently(Value, originalTzId);
-            var converted = zonedOriginal.WithZone(DateUtil.GetZone(tzId));
+            ZonedDateTime zonedOriginal = DateUtil.ToZonedDateTimeLeniently(Value, originalTzId);
+            ZonedDateTime converted = zonedOriginal.WithZone(DateUtil.GetZone(tzId));
 
             return converted.Zone == DateTimeZone.Utc
                 ? new CalDateTime(converted.ToDateTimeUtc(), tzId)
