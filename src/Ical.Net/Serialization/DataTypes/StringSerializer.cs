@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Ical.Net.DataTypes;
 
@@ -14,46 +15,80 @@ namespace Ical.Net.Serialization.DataTypes
 
         public StringSerializer(SerializationContext ctx) : base(ctx) {}
 
-        internal static readonly Regex SingleBackslashMatch = new Regex(@"(?<!\\)\\(?!\\)", RegexOptions.Compiled);
-
         protected virtual string Unescape(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrEmpty(value))
             {
                 return value;
             }
 
-            value = value.Replace(@"\n", "\n");
-            value = value.Replace(@"\N", "\n");
-            value = value.Replace(@"\;", ";");
-            value = value.Replace(@"\,", ",");
-            // NOTE: double quotes aren't escaped in RFC2445, but are in Mozilla Sunbird (0.5-)
-            value = value.Replace("\\\"", "\"");
+            StringBuilder sb = new StringBuilder(value.Length);
 
-            // Replace all single-backslashes with double-backslashes.
-            value = SingleBackslashMatch.Replace(value, "\\\\");
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
 
-            // Unescape double backslashes
-            value = value.Replace(@"\\", @"\");
-            return value;
+                if (c != '\\')
+                {
+                    sb.Append(c);
+                    continue;
+                }
+
+                // Trailing backslash — keep as-is
+                if (i == value.Length - 1)
+                {
+                    sb.Append('\\');
+                    break;
+                }
+
+                char next = value[++i];
+
+                switch (next)
+                {
+                    case 'n':
+                    case 'N':
+                        sb.Append('\n');
+                        break;
+                    case '\\':
+                        sb.Append('\\');
+                        break;
+                    case ';':
+                        sb.Append(';');
+                        break;
+                    case ',':
+                        sb.Append(',');
+                        break;
+                    case '"':
+                        // NOTE: double quotes aren't escaped in RFC 5545, but are in Mozilla Sunbird (0.5-)
+                        sb.Append('"');
+                        break;
+                    default:
+                        // Unknown escape sequence — preserve backslash and character
+                        sb.Append('\\');
+                        sb.Append(next);
+                        break;
+                }
+            }
+
+            return sb.ToString();
         }
 
         protected virtual string Escape(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrEmpty(value))
             {
                 return value;
             }
 
-            // NOTE: fixed a bug that caused text parsing to fail on
-            // programmatically entered strings.
+            // NOTE: backslash must be escaped first to avoid double-escaping subsequent replacements.
             // SEE unit test SERIALIZE25().
-            value = value.Replace(SerializationConstants.LineBreak, @"\n");
-            value = value.Replace("\r", @"\n");
-            value = value.Replace("\n", @"\n");
-            value = value.Replace(";", @"\;");
-            value = value.Replace(",", @"\,");
-            return value;
+            return value
+                .Replace("\\", "\\\\")
+                .Replace(SerializationConstants.LineBreak, @"\n")
+                .Replace("\r", @"\n")
+                .Replace("\n", @"\n")
+                .Replace(";", @"\;")
+                .Replace(",", @"\,");
         }
 
         public override Type TargetType => typeof (string);
